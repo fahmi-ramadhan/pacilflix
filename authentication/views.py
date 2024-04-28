@@ -77,4 +77,4 @@ def register(request):
 @require_http_methods(['GET'])
 def logout(request):
     request.session.flush()
-    return redirect('authentication:login')
+    return redirect('authentication:index')

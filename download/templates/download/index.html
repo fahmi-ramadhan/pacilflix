@@ -21,10 +21,10 @@
 </div>
 
 <!-- Main -->
-<div class="container mt-5">
-    <h2 class="text-center mb-4">Daftar Unduhan</h2>
+<div class="container my-5">
+    <h1 class="text-center mb-5">Daftar Unduhan</h1>
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-12">
             <div class="mb-3 text-end">
                 <form id="download-form" action="{% url 'download:add_download' %}" method="POST">
                     {% csrf_token %}
@@ -38,7 +38,7 @@
                 </form>
             </div>
             <div class="table-responsive">
-                <table class="table table-hover align-middle">
+                <table class="table align-middle">
                     <thead class="table-light">
                         <tr>
                             <th scope="col">Judul</th>

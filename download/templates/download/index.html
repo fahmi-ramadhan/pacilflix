@@ -10,7 +10,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Selamat! Anda telah berhasil mengunduh <span id="film-title">[Judul Tayangan]</span> dan akan berlaku hingga <span id="expiration-date">[Current Time + 7 hari]</span>.</p>
+                <p>Selamat! Anda telah berhasil mengunduh <span id="film-title">{{ selected_show.judul }}</span> dan akan berlaku hingga <span id="expiration-date">{{ expiration_date }}</span>.</p>
                 <p>Cek informasi selengkapnya pada halaman daftar unduhan.</p>
             </div>
             <div class="modal-footer">
@@ -26,7 +26,16 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="mb-3 text-end">
-                <button class="btn btn-success download-button" data-bs-toggle="modal" data-bs-target="#download-modal">Unduh Tayangan</button>
+                <form method="POST" action="{% url 'download:add_download' %}">
+                    {% csrf_token %}
+                    <label for="show-selection">Pilih Tayangan:</label>
+                    <select id="show-selection" name="show_id" class="form-select">
+                        {% for show in available_shows %}
+                            <option value="{{ show.id }}">{{ show.judul }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="btn btn-success mt-2">Unduh Tayangan</button>
+                </form>
             </div>
             <div class="table-responsive">
                 <table class="table table-hover align-middle">
@@ -38,20 +47,19 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {% for show in shows %}
                         <tr>
-                            <td>Sample Download 1</td>
-                            <td>2024-05-02 10:30</td>
+                            <td>{{ show.judul }}</td>
+                            <td>{{ show.timestamp }}</td>
                             <td>
-                                <button class="btn btn-danger btn-sm">Hapus</button>
+                                <form method="POST" action="{% url 'download:delete_show' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="show_id" value="{{ show.id_tayangan }}">
+                                    <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                </form>
                             </td>
                         </tr>
-                        <tr>
-                            <td>Sample Download 2</td>
-                            <td>2024-05-01 15:45</td>
-                            <td>
-                                <button class="btn btn-danger btn-sm">Hapus</button>
-                            </td>
-                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>

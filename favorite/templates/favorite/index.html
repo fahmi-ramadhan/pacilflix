@@ -10,15 +10,18 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <label for="favorites-dropdown" class="form-label">Judul Daftar Favorit:</label>
-                <select id="favorites-dropdown" class="form-select">
-                    <option value="favorite1">Favorite List 1</option>
-                    <option value="favorite2">Favorite List 2</option>
-                    <option value="favorite3">Favorite List 3</option>
-                </select>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Tambah</button>
+                <form method="POST" action="{% url 'favorite:add_to_favorite' %}">
+                    {% csrf_token %}
+                    <label for="favorites-dropdown" class="form-label">Judul Daftar Favorit:</label>
+                    <select id="favorites-dropdown" name="show_id" class="form-select">
+                        {% for show in available_shows %}
+                            <option value="{{ show.id }}">{{ show.judul }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Tambah</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -42,20 +45,19 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {% for favorite in favorites %}
                         <tr>
-                            <td>Sample Favorite 1</td>
-                            <td>2024-05-02 10:30</td>
+                            <td>{{ favorite.judul }}</td>
+                            <td>{{ favorite.timestamp }}</td>
                             <td>
-                                <button class="btn btn-danger btn-sm">Hapus</button>
+                                <form method="POST" action="{% url 'favorite:delete_favorite' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="favorite_id" value="{{ favorite.id }}">
+                                    <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                </form>
                             </td>
                         </tr>
-                        <tr>
-                            <td>Sample Favorite 2</td>
-                            <td>2024-05-01 15:45</td>
-                            <td>
-                                <button class="btn btn-danger btn-sm">Hapus</button>
-                            </td>
-                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>

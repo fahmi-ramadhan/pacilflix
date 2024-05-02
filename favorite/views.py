@@ -51,12 +51,13 @@ def get_available_shows(username):
     return shows
 
 def add_to_favorite(username, show_id):
+    timestamp = add_to_daftar_favorit(username)
     connection = get_db_connection()
     cursor = connection.cursor()
     cursor.execute(
         "INSERT INTO TAYANGAN_MEMILIKI_DAFTAR_FAVORIT (id_tayangan, username, timestamp) "
         "VALUES (%s, %s, %s)",
-        (show_id, username, now())
+        (show_id, username, timestamp)
     )
     connection.commit()
     cursor.close()
@@ -73,6 +74,20 @@ def delete_favorite(username, show_id, timestamp):
     connection.commit()
     cursor.close()
     connection.close()
+
+def add_to_daftar_favorit(username):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    timestamp = now()
+    cursor.execute(
+        "INSERT INTO DAFTAR_FAVORIT (timestamp, username, judul) "
+        "VALUES (%s, %s, %s)",
+        (timestamp, username, 'My Favorite Shows')
+    )
+    connection.commit()
+    cursor.close()
+    connection.close()
+    return timestamp
 
 @require_http_methods(['POST'])
 def add_to_favorite_view(request):

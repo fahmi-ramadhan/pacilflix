@@ -12,12 +12,14 @@
             <div class="modal-body">
                 <form method="POST" action="{% url 'favorite:add_to_favorite' %}">
                     {% csrf_token %}
-                    <label for="favorites-dropdown" class="form-label">Judul Daftar Favorit:</label>
-                    <select id="favorites-dropdown" name="show_id" class="form-select">
-                        {% for show in available_shows %}
-                            <option value="{{ show.id }}">{{ show.judul }}</option>
-                        {% endfor %}
-                    </select>
+                    <div class="mb-3">
+                        <label for="favorites-dropdown" class="form-label">Judul Daftar Favorit:</label>
+                        <select id="favorites-dropdown" name="show_id" class="form-select">
+                            {% for show in available_shows %}
+                                <option value="{{ show.id }}">{{ show.judul }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Tambah</button>
                     </div>

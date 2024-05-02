@@ -1,3 +1,65 @@
-{% extends 'base.html' %} {% block content %}
-<div>Hello from favorite</div>
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- Modal -->
+<div class="modal fade" id="favorites-modal" tabindex="-1" aria-labelledby="favorites-modal-label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="favorites-modal-label">Tambah ke Daftar Favorit</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label for="favorites-dropdown" class="form-label">Judul Daftar Favorit:</label>
+                <select id="favorites-dropdown" class="form-select">
+                    <option value="favorite1">Favorite List 1</option>
+                    <option value="favorite2">Favorite List 2</option>
+                    <option value="favorite3">Favorite List 3</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Tambah</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main content -->
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Daftar Favorit</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="mb-3 text-end">
+                <button class="btn btn-success favorites-button" data-bs-toggle="modal" data-bs-target="#favorites-modal">Favorit Tayangan</button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">Judul</th>
+                            <th scope="col">Waktu Ditambahkan</th>
+                            <th scope="col">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Sample Favorite 1</td>
+                            <td>2024-05-02 10:30</td>
+                            <td>
+                                <button class="btn btn-danger btn-sm">Hapus</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Sample Favorite 2</td>
+                            <td>2024-05-01 15:45</td>
+                            <td>
+                                <button class="btn btn-danger btn-sm">Hapus</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}

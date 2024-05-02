@@ -112,9 +112,10 @@ def subscribe(request, paket):
                 if len(active_subscription) > 0:
                     cursor.execute(f"""
                         UPDATE TRANSACTION
-                        SET end_date_time = '{end_date.strftime("%Y-%m-%d %H:%M:%S")}', metode_pembayaran = '{payment_method}',
-                        timestamp_pembayaran = '{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}'
-                        nama_paket = '{package_name}', metode_pembayaran = '{payment_method}'
+                        SET end_date_time = '{end_date.strftime("%Y-%m-%d %H:%M:%S")}',
+                        metode_pembayaran = '{payment_method}',
+                        timestamp_pembayaran = '{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                        nama_paket = '{package_name}'
                         WHERE username = '{request.session.get('username')}'
                         AND END_DATE_TIME > '{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}'
                     """)

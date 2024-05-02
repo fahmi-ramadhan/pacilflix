@@ -1,6 +1,10 @@
 from django.urls import path
-from favorite.views import index
+from favorite.views import index, add_to_favorite_view, delete_favorite_view
+
+app_name = 'favorite'
 
 urlpatterns = [
-    path('', index, name='favorite'),
+    path('', index, name='index'),
+    path('add/', add_to_favorite_view, name='add_to_favorite'),
+    path('delete/', delete_favorite_view, name='delete_favorite'),
 ]

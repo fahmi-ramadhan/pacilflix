@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 from django.utils.timezone import now
 from utils.db_utils import get_db_connection
+from django.http import JsonResponse
 
 def index(request):
     username = request.session.get('username')
@@ -78,11 +79,11 @@ def add_download(username, show_id):
 def add_download_view(request):
     username = request.session.get('username')
     if not username:
-        return redirect('authentication:login')
+        return JsonResponse({'success': False, 'error': 'User not logged in'})
 
     show_id = request.POST.get('show_id')
     add_download(username, show_id)
-    return redirect('download:index')
+    return JsonResponse({'success': True})
 
 @require_http_methods(['POST'])
 def delete_show(request):

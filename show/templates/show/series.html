@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halaman Series</title>
+</head>
+<body>
+    <h1>Halaman Series</h1>
+
+    <!-- Informasi Tayangan -->
+    <h2>Informasi Tayangan</h2>
+    <ul>
+        <li><strong>Judul:</strong> The Godfather</li>
+        <li><strong>Total View:</strong> 3</li>
+        <li><strong>Rating Rata-Rata:</strong> 7.0</li>
+        <li><strong>Sinopsis:</strong> An organized crime dynasty's aging patriarch transfers control of his clandestine empire to his reluctant son.</li>
+        <li><strong>Genre:</strong>
+            <ul>
+                <li>Crime</li>
+                <li>Drama</li>
+            </ul>
+        </li>
+        <li><strong>Asal Negara:</strong> USA</li>
+    </ul>
+
+    <!-- Daftar Pemain -->
+    <h2>Pemain</h2>
+    <ul>
+        <li>Olga Ivanova</li>
+    </ul>
+
+    <!-- Daftar Penulis Skenario -->
+    <h2>Penulis Skenario</h2>
+    <ul>
+        <li>Sophia Mueller</li>
+    </ul>
+
+    <!-- Sutradara -->
+    <h2>Sutradara</h2>
+    <ul>
+        <li>Luisa Oliveira</li>
+    </ul>
+
+    <!-- Daftar Episode -->
+    <h2>Episode</h2>
+    <ul>
+        <li>0 - 12</li>
+    </ul>
+
+    <!-- Tombol Unduh Tayangan -->
+    <form action="/unduh_tayangan" method="post">
+        <button type="submit">Unduh Tayangan</button>
+    </form>
+
+    <!-- Tombol Favorit Tayangan -->
+    <form action="/tambah_ke_favorit" method="post">
+        <button type="submit">Favoritkan Tayangan</button>
+    </form>
+
+    <!-- Bagian Ulasan -->
+    <h2>Ulasan</h2>
+    <ul>
+        <li>
+            <strong>Username:</strong> user10<br>
+            <strong>Deskripsi:</strong> Filmya seru bgt!<br>
+            <strong>Rating:</strong> 7.0
+        </li>
+    </ul>
+
+</body>
+</html>
+{% endblock content %}

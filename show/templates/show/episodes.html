@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Episode</title>
+</head>
+<body>
+    <h1>Detail Episode</h1>
+
+    <!-- Informasi Episode -->
+    <h2>Informasi Episode</h2>
+    <ul>
+        <li><strong>Judul:</strong> The Godfather: Episode 1</li>
+        <li><strong>Sub Judul:</strong> Opening Scene</li>
+        <li>
+            <!-- Tombol Tonton -->
+            <form action="/tonton_episode" method="post">
+                <button type="submit">Tonton Episode</button>
+            </form>
+        </li>
+        <li><strong>Sinopsis Episode:</strong> Michael Corleone emerges as a powerful figure in the Sicilian mafia.</li>
+        <li><strong>Durasi Episode:</strong> 60 menit</li>
+        <li><strong>URL Episode:</strong> https://youtube.com/asmda-aNADSBn-SJdjsba/episode1</li>
+        <li><strong>Tanggal Rilis Episode:</strong> 01-01-1972</li>
+    </ul>
+
+    <!-- Episode Lainnya -->
+    <h2>Episode Lainnya</h2>
+    <ul>
+        <li><a href="#">Episode 2</a></li>
+        <li><a href="#">Episode 3</a></li>
+        <li><a href="#">Episode 4</a></li>
+    </ul>
+
+</body>
+</html>
+{% endblock content %}

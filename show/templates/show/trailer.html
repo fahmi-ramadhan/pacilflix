@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h1>Daftar Tayangan PacilFlix</h1>
+            <input type="text" id="searchInput" class="form-control my-3" placeholder="Cari Film, Series..." oninput="searchShows()">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="searchResults" class="d-none">
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-12">
+            <h2>10 Tayangan Terbaik Minggu Ini</h2>
+            <div class="btn-group" role="group">
+                <button id="globalBtn" type="button" class="btn btn-secondary">Global</button>
+                <button id="localBtn" type="button" class="btn btn-secondary">Lokal</button>
+
+            </div>
+            <table class="table table-hover mt-3">
+                <thead>
+                    <tr>
+                        <th>Peringkat</th>
+                        <th>Judul</th>
+                        <th>Sinopsis</th>
+                        <th>Trailer</th>
+                        <th>Tanggal Rilis</th>
+                        <th>Total View 7 Hari Terakhir</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tayangan in top_trailers %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ tayangan.0 }}</td>
+                        <td>{{ tayangan.1 }}</td>
+                        <td><a href="{{ tayangan.2 }}" target="_blank">Watch Trailer</a></td>
+                        <td>{{ tayangan.3 }}</td>
+                        <td>{{ tayangan.4 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <h2>Films</h2>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Synopsis</th>
+                        <th>Trailer</th>
+                        <th>Release Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for film in films %}
+                    <tr>
+                        <td>{{ film.0 }}</td>
+                        <td>{{ film.1 }}</td>
+                        <td><a href="{{ film.2 }}" target="_blank">Watch Trailer</a></td>
+                        <td>{{ film.3 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <h2>Series</h2>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Synopsis</th>
+                        <th>Trailer</th>
+                        <th>Release Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for series in series %}
+                    <tr>
+                        <td>{{ series.0 }}</td>
+                        <td>{{ series.1 }}</td>
+                        <td><a href="{{ series.2 }}" target="_blank">Watch Trailer</a></td>
+                        <td>{{ series.3 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Fungsi untuk memuat tayangan berdasarkan tipe (global atau lokal)
+    const loadTrailers = (type) => {
+        fetch(`/trailers?type=${type}`)
+            .then(response => response.json())
+            .then(data => {
+                // Perbarui tabel dengan data yang diperoleh dari server
+                renderTable(data.top_trailers, document.getElementById('topTrailers'), 'Top 10 Trailers');
+            })
+            .catch(error => console.error('Error:', error));
+    };
+
+    // Fungsi untuk memperbarui tabel dengan data yang diperoleh
+    const renderTable = (data, container, title) => {
+        // Buat tabel HTML dari data yang diberikan
+        let tableHTML = `<h2>${title}</h2><table class="table table-hover mt-3"><thead><tr><th>Peringkat</th><th>Judul</th><th>Sinopsis</th><th>Trailer</th><th>Tanggal Rilis</th><th>Total View 7 Hari Terakhir</th></tr></thead><tbody>`;
+        data.forEach((tayangan, index) => {
+            tableHTML += `<tr><td>${index + 1}</td><td>${tayangan[0]}</td><td>${tayangan[1]}</td><td><a href="${tayangan[2]}" target="_blank">Watch Trailer</a></td><td>${tayangan[3]}</td><td>${tayangan[4]}</td></tr>`;
+        });
+        tableHTML += `</tbody></table>`;
+        container.innerHTML = tableHTML;
+    };
+
+    // Ketika dokumen siap, muat tayangan global secara default
+    document.addEventListener('DOMContentLoaded', () => {
+        loadTrailers('global');
+    });
+
+    // Tambahkan event listener untuk tombol global
+    document.getElementById('globalBtn').addEventListener('click', () => {
+        loadTrailers('global');
+    });
+
+    // Tambahkan event listener untuk tombol lokal
+    document.getElementById('localBtn').addEventListener('click', () => {
+        loadTrailers('local');
+    });
+</script>
+
+{% endblock content %}

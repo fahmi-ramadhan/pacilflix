@@ -10,11 +10,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Selamat! Anda telah berhasil mengunduh <span id="film-title">{{ selected_show.judul }}</span> dan akan berlaku hingga <span id="expiration-date">{{ expiration_date }}</span>.</p>
+                <p>Selamat! Anda telah berhasil mengunduh <span id="film-title"></span> dan akan berlaku hingga <span id="expiration-date"></span>.</p>
                 <p>Cek informasi selengkapnya pada halaman daftar unduhan.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Menuju Daftar Unduhan</button>
+                <a href="{% url 'download:index' %}" class="btn btn-primary" id="redirect-downloads">Menuju Daftar Unduhan</a>
             </div>
         </div>
     </div>
@@ -26,7 +26,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="mb-3 text-end">
-                <form method="POST" action="{% url 'download:add_download' %}">
+                <form id="download-form" action="{% url 'download:add_download' %}" method="POST">
                     {% csrf_token %}
                     <label for="show-selection">Pilih Tayangan:</label>
                     <select id="show-selection" name="show_id" class="form-select">
@@ -34,7 +34,7 @@
                             <option value="{{ show.id }}">{{ show.judul }}</option>
                         {% endfor %}
                     </select>
-                    <button type="submit" class="btn btn-success mt-2">Unduh Tayangan</button>
+                    <button type="button" class="btn btn-success mt-2" id="download-button">Unduh Tayangan</button>
                 </form>
             </div>
             <div class="table-responsive">
@@ -46,11 +46,11 @@
                             <th scope="col">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="downloads-list">
                         {% for show in shows %}
                         <tr>
                             <td>{{ show.judul }}</td>
-                            <td>{{ show.timestamp }}</td>
+                            <td>{{ show.timestamp|date:"F j, Y, g:i a" }}</td>
                             <td>
                                 <form method="POST" action="{% url 'download:delete_show' %}">
                                     {% csrf_token %}
@@ -66,4 +66,62 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('download-button').addEventListener('click', function() {
+        const form = document.getElementById('download-form');
+        const selectedShow = document.getElementById('show-selection');
+        const showTitle = selectedShow.options[selectedShow.selectedIndex].text;
+        const expirationDate = new Date();
+        expirationDate.setDate(expirationDate.getDate() + 7);
+
+        document.getElementById('film-title').textContent = showTitle;
+        document.getElementById('expiration-date').textContent = expirationDate.toLocaleString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: true
+        });
+
+        const formData = new FormData(form);
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const downloadsList = document.getElementById('downloads-list');
+                const newRow = document.createElement('tr');
+                const formattedDate = expirationDate.toLocaleString('en-US', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    hour12: true
+                });
+
+                newRow.innerHTML = `
+                    <td>${showTitle}</td>
+                    <td>${formattedDate}</td>
+                    <td>
+                        <form method="POST" action="{% url 'download:delete_show' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="show_id" value="${formData.get('show_id')}">
+                            <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                        </form>
+                    </td>
+                `;
+                downloadsList.appendChild(newRow);
+
+                new bootstrap.Modal(document.getElementById('download-modal')).show();
+            }
+        });
+    });
+</script>
+
 {% endblock content %}

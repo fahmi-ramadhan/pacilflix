@@ -19,7 +19,7 @@ def contributors(request):
                     UNION
                     SELECT *, 'Pemain' as Peran FROM contributors JOIN PEMAIN ON contributors.id = PEMAIN.id
                 """)
-                user = cursor.fetchall()
+                contribs = cursor.fetchall()
 
                 context = [
                     {
@@ -29,7 +29,7 @@ def contributors(request):
                         "kewarganegaraan": row[3],
                         "peran": row[5],
                     }
-                for row in user]
+                for row in contribs]
 
                 return render(request, 'contributor/contributors.html', {'contributors': context})
 

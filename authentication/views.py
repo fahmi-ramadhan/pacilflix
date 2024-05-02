@@ -8,6 +8,8 @@ from django.views.decorators.http import require_http_methods
 
 @require_http_methods(['GET'])
 def index(request):
+    if request.session.get('username') is not None:
+        return redirect('show')
     return render(request, 'authentication/index.html')
 
 

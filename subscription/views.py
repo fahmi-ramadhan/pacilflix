@@ -59,7 +59,6 @@ def subscriptions(request):
                     ORDER BY timestamp_pembayaran DESC
                 """)
                 purchases = cursor.fetchall()
-                print(type(purchases[0][4]))
 
                 transactions = [
                     {

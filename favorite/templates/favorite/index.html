@@ -54,9 +54,10 @@
                             <td>
                                 <form method="POST" action="{% url 'favorite:delete_favorite' %}">
                                     {% csrf_token %}
-                                    <input type="hidden" name="favorite_id" value="{{ favorite.id }}">
+                                    <input type="hidden" name="show_id" value="{{ favorite.show_id }}">
+                                    <input type="hidden" name="timestamp" value="{{ favorite.timestamp }}">
                                     <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                                </form>
+                                </form>                                                             
                             </td>
                         </tr>
                         {% endfor %}

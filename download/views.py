@@ -55,14 +55,19 @@ def get_available_shows(username):
 def delete_downloaded_show(username, show_id):
     connection = get_db_connection()
     cursor = connection.cursor()
-    cursor.execute(
-        "DELETE FROM TAYANGAN_TERUNDUH "
-        "WHERE username = %s AND id_tayangan = %s",
-        (username, show_id)
-    )
-    connection.commit()
-    cursor.close()
-    connection.close()
+    try:
+        cursor.execute(
+            "DELETE FROM TAYANGAN_TERUNDUH WHERE username = %s AND id_tayangan = %s",
+            (username, show_id)
+        )
+        connection.commit()
+        return True
+    except Exception as e:
+        print("Penghapusan gagal:", e)
+        return False
+    finally:
+        cursor.close()
+        connection.close()
 
 def add_download(username, show_id):
     connection = get_db_connection()
@@ -89,8 +94,13 @@ def add_download_view(request):
 def delete_show(request):
     username = request.session.get('username')
     if not username:
-        return redirect('authentication:login')
+        return JsonResponse({'success': False, 'error': 'User not logged in'})
 
     show_id = request.POST.get('show_id')
-    delete_downloaded_show(username, show_id)
-    return redirect('download:index')
+    try:
+        if delete_downloaded_show(username, show_id):
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'error': 'Tayangan tidak bisa dihapus, masih kurang dari 1 hari sejak diunduh.'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})

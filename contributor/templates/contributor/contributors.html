@@ -1,7 +1,8 @@
 {% extends 'base.html' %} {% block content %}
 <div class="my-5 d-flex flex-column">
+  <h1 class="text-center mb-5">Daftar Kontributor</h1>
   <div class="align-self-center w-75">
-    <div class="d-flex flex-row w-75 gap-2">
+    <div class="d-flex flex-row w-75 gap-2 my-3">
       <select class="form-select w-25">
         <option value="All" selected hidden>Peran</option>
         <option value="All">Semua</option>
@@ -11,7 +12,7 @@
       </select>
       <button class="btn btn-primary submit-button" onclick="updateTable()">Filter!</button>
     </div>
-    <table class="table">
+    <table class="table border">
       <tr>
         <th>ID</th>
         <th>Nama</th>

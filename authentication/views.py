@@ -64,8 +64,12 @@ def register(request):
             return redirect('authentication:login')
 
         except psycopg2.Error as e:
-            print(e)
-            return HttpResponse("Error occurred while connecting to the database")
+            if e.pgcode == 'P0001':
+                messages.error(request, e.diag.message_primary)
+                return redirect('authentication:register')
+            else:
+                print(e)
+                return HttpResponse("Error occurred while connecting to the database")
 
         finally:
             if connection:

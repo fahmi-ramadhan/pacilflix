@@ -1,6 +1,11 @@
 from django.urls import path
-from download.views import index
+from . import views
+
+app_name = 'download'
 
 urlpatterns = [
-    path('', index, name='download'),
+    path('', views.index, name='index'),
+    path('add/', views.add_download_view, name='add_download'),
+    path('delete/', views.delete_show, name='delete_show'),
+    path('list/', views.index, name='download_list'),
 ]

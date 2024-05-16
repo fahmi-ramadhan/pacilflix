@@ -33,6 +33,15 @@
                     <a href="{% url 'authentication:index' %}" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
+            {% if messages %}
+                <div class="mb-3">
+                    {% for message in messages %}
+                        <div class="alert alert-danger">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>

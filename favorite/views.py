@@ -99,6 +99,9 @@ def delete_favorite(username, show_id, input_timestamp):
         result = cursor.rowcount
         connection.commit()
 
+        if result == 0:
+            raise ValueError("No records found to delete.")
+
         return result
 
     finally:
@@ -129,7 +132,7 @@ def add_to_favorite_view(request):
     return redirect('favorite:index')
 
 def delete_favorite_view(request):
-    try:
+    if request.method == 'POST':
         username = request.session.get('username')
         if not username:
             return redirect('login')
@@ -137,11 +140,40 @@ def delete_favorite_view(request):
         show_id = request.POST.get('show_id')
         raw_timestamp = request.POST.get('timestamp')
 
+        if not show_id or not raw_timestamp:
+            return HttpResponseBadRequest("Missing show_id or timestamp")
+
         try:
             deletion_result = delete_favorite(username, show_id, raw_timestamp)
+            if deletion_result == 0:
+                return HttpResponseBadRequest("No matching favorite found to delete.")
             return redirect('favorite:index')
         except Exception as e:
-            return HttpResponseBadRequest("Invalid request: could not delete favorite.")
+            return HttpResponseBadRequest(f"Invalid request: could not delete favorite. Error: {str(e)}")
+    else:
+        return HttpResponseBadRequest("Invalid request method.")
 
+
+def favorite_details(request, show_id):
+    if not request.session.get('username'):
+        return redirect('authentication:login')
+
+    try:
+        show_id_str = str(show_id)
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        cursor.execute(
+            "SELECT TAYANGAN.judul, TAYANGAN_MEMILIKI_DAFTAR_FAVORIT.timestamp "
+            "FROM TAYANGAN "
+            "JOIN TAYANGAN_MEMILIKI_DAFTAR_FAVORIT ON TAYANGAN.id = TAYANGAN_MEMILIKI_DAFTAR_FAVORIT.id_tayangan "
+            "WHERE TAYANGAN_MEMILIKI_DAFTAR_FAVORIT.username = %s AND TAYANGAN.id = %s",
+            (request.session['username'], show_id_str)
+        )
+        results = cursor.fetchall()
+        shows = [{'judul': row[0], 'timestamp': row[1]} for row in results]
+        cursor.close()
+        connection.close()
     except Exception as e:
-        return HttpResponseBadRequest("Invalid request: could not delete favorite.")
+        return HttpResponseBadRequest(f"Error processing request: {str(e)}")
+
+    return render(request, 'favorite/detail.html', {'shows': shows, 'show_id': show_id_str})

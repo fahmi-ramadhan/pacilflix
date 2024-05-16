@@ -49,7 +49,9 @@
                     <tbody>
                         {% for favorite in favorites %}
                         <tr>
-                            <td>{{ favorite.judul }}</td>
+                            <td>
+                                <a href="{% url 'favorite:favorite_details' favorite.show_id %}">{{ favorite.judul }}</a>
+                            </td>                        
                             <td>{{ favorite.timestamp }}</td>
                             <td>
                                 <form method="POST" action="{% url 'favorite:delete_favorite' %}">

@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
-from django.utils.timezone import now
+from django.utils.timezone import now, timedelta
 from utils.db_utils import get_db_connection
 from django.http import JsonResponse
+from django.utils.timezone import now, make_aware, get_default_timezone
 
 def index(request):
     username = request.session.get('username')
@@ -23,18 +24,34 @@ def get_downloaded_shows(username):
     connection = get_db_connection()
     cursor = connection.cursor()
     cursor.execute(
-        "SELECT TAYANGAN.judul, TAYANGAN_TERUNDUH.timestamp, TAYANGAN_TERUNDUH.id_tayangan "
-        "FROM TAYANGAN_TERUNDUH "
-        "JOIN TAYANGAN ON TAYANGAN.id = TAYANGAN_TERUNDUH.id_tayangan "
-        "WHERE TAYANGAN_TERUNDUH.username = %s",
+        """
+        SELECT TAYANGAN.judul, TAYANGAN_TERUNDUH.timestamp, TAYANGAN_TERUNDUH.id_tayangan 
+        FROM TAYANGAN_TERUNDUH 
+        JOIN TAYANGAN ON TAYANGAN.id = TAYANGAN_TERUNDUH.id_tayangan 
+        WHERE TAYANGAN_TERUNDUH.username = %s
+        """,
         (username,)
     )
     rows = cursor.fetchall()
     cursor.close()
     connection.close()
 
-    shows = [{'judul': row[0], 'timestamp': row[1], 'id_tayangan': row[2]} for row in rows]
-    return shows
+    valid_duration = timedelta(days=7)
+    valid_shows = []
+
+    for row in rows:
+        download_time = row[1]
+        if not download_time.tzinfo:
+            download_time = make_aware(download_time, get_default_timezone())
+        
+        if now() - download_time <= valid_duration:
+            valid_shows.append({
+                'judul': row[0],
+                'timestamp': download_time,
+                'id_tayangan': row[2]
+            })
+
+    return valid_shows
 
 def get_available_shows(username):
     connection = get_db_connection()

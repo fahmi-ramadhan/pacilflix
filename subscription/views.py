@@ -101,28 +101,10 @@ def subscribe(request, paket):
                 payment_method = request.POST['payment_method']
                 connection = get_db_connection()
 
-                cursor = connection.cursor()
                 cursor.execute(f"""
-                    SELECT * FROM TRANSACTION WHERE username = '{request.session.get('username')}'
-                    AND END_DATE_TIME > '{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}'
+                    INSERT INTO TRANSACTION (username, nama_paket, start_date_time, end_date_time, metode_pembayaran, timestamp_pembayaran)
+                    VALUES ('{request.session.get('username')}', '{package_name}', '{start_date.strftime("%Y-%m-%d %H:%M:%S")}', '{end_date.strftime("%Y-%m-%d %H:%M:%S")}', '{payment_method}', '{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
                 """)
-                active_subscription = cursor.fetchall()
-
-                if len(active_subscription) > 0:
-                    cursor.execute(f"""
-                        UPDATE TRANSACTION
-                        SET end_date_time = '{end_date.strftime("%Y-%m-%d %H:%M:%S")}',
-                        metode_pembayaran = '{payment_method}',
-                        timestamp_pembayaran = '{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
-                        nama_paket = '{package_name}'
-                        WHERE username = '{request.session.get('username')}'
-                        AND END_DATE_TIME > '{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}'
-                    """)
-                else:
-                    cursor.execute(f"""
-                        INSERT INTO TRANSACTION (username, nama_paket, start_date_time, end_date_time, metode_pembayaran, timestamp_pembayaran)
-                        VALUES ('{request.session.get('username')}', '{package_name}', '{start_date.strftime("%Y-%m-%d %H:%M:%S")}', '{end_date.strftime("%Y-%m-%d %H:%M:%S")}', '{payment_method}', '{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
-                    """)
                 connection.commit()
 
                 messages.success(request, 'Subscription successful.')

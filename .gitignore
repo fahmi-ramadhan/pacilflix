@@ -134,3 +134,6 @@ GitHub.sublime-settings
 !.vscode/launch.json 
 !.vscode/extensions.json 
 .history
+
+# OS generated files #
+.DS_Store

@@ -38,7 +38,7 @@
                 <button class="btn btn-success favorites-button" data-bs-toggle="modal" data-bs-target="#favorites-modal">Favorit Tayangan</button>
             </div>
             <div class="table-responsive">
-                <table class="table align-middle">
+                <table class="table text-center align-middle">
                     <thead class="table-light">
                         <tr>
                             <th scope="col">Judul</th>
@@ -49,14 +49,17 @@
                     <tbody>
                         {% for favorite in favorites %}
                         <tr>
-                            <td>{{ favorite.judul }}</td>
+                            <td>
+                                <a href="{% url 'favorite:favorite_details' favorite.show_id %}" style="color: #2a4d69;">{{ favorite.judul }}</a>
+                            </td>                        
                             <td>{{ favorite.timestamp }}</td>
                             <td>
                                 <form method="POST" action="{% url 'favorite:delete_favorite' %}">
                                     {% csrf_token %}
-                                    <input type="hidden" name="favorite_id" value="{{ favorite.id }}">
+                                    <input type="hidden" name="show_id" value="{{ favorite.show_id }}">
+                                    <input type="hidden" name="timestamp" value="{{ favorite.timestamp }}">
                                     <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                                </form>
+                                </form>                                                             
                             </td>
                         </tr>
                         {% endfor %}

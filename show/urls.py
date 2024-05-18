@@ -11,5 +11,5 @@ urlpatterns = [
     path('save_review', views.save_review, name='save_review'),
     path('<str:judul>/update_review/', views.update_review, name='update_update'),
     path('add-to', views.add_to, name='add_to'),
-    path('add-tontonan/', views.add_tontonan, name='add_tontonan'),
+    path('add-tontonan/<str:id>', views.add_tontonan, name='add_tontonan'),
 ]

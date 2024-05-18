@@ -42,10 +42,10 @@
       <div class="mb-4">
         <div class="mt-5">
             <input id="input-range" class="w-full rounded-lg overflow-hidden appearance-none bg-gray-400 h-4" type="range" min="1" max="{{ episode_khusus.0.3 }}" step="1" value="50" />
-        <a href="#" class="w-full block rounded-md font-bold border border-gray-600 px-12 py-3 duration-200 text-white border-white hover:bg-white hover:text-[#242831]">
+        </div>
+        <a id="watch-now-button" href="#" class="w-full block rounded-md font-bold border border-gray-600 px-12 py-3 duration-200 text-black border-white hover:bg-white hover:text-[#242831]">
           Tonton
         </a>
-      </div>
     </div>
     <div class="flex flex-col">
       <div class="mb-4">
@@ -111,20 +111,25 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const rangeInput = document.getElementById("input-range");
-    const totalDuration = parseInt(rangeInput.max, 10);
-    const threshold = totalDuration * 0.7;
+    document.addEventListener("DOMContentLoaded", function () {
+        const rangeInput = document.getElementById("input-range");
+        const totalDuration = parseInt(rangeInput.max, 10);
+        const threshold = totalDuration * 0.7;
+        const watchNowButton = document.getElementById("watch-now-button");
+        const id = "{{ episode_khusus.0.6 }}";
 
-    rangeInput.addEventListener("input", function () {
-      const currentValue = parseInt(rangeInput.value, 10);
+        watchNowButton.addEventListener("click", function (event) {
+            event.preventDefault();
+            const currentValue = parseInt(rangeInput.value, 10);
+            console.log(currentValue)
 
-      if (currentValue >= threshold) {
-        window.location.href = '/show/add-tontonan/' + subjudul + '/';
-      }
+            if (currentValue >= threshold) {
+                window.location.href = '/show/add-tontonan/' + id + '?durasi=' + currentValue;
+            } else {
+                alert("You need to adjust the slider to at least 70% to watch now.");
+            }
+        });
     });
-  });
-
 </script>
 </body>
 </html>

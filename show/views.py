@@ -391,7 +391,8 @@ def episode_detail(request, judul, sub_judul):
             e.sinopsis,
             e.durasi,
             e.url_video,
-            e.release_date
+            e.release_date,
+            e.id_series
         FROM episode e
         LEFT JOIN tayangan t ON t.id= e.id_series
         WHERE
@@ -464,10 +465,10 @@ def add_to(request):
     connection = get_db_connection()
     cursor = connection.cursor()
     if request.GET.get('addto') == "favorit":
-        cursor.execute(f"INSERT INTO DAFTAR_FAVORIT VALUES (CURRENT_TIMESTAMP, '{username}', '{judul}')")
+        cursor.execute(f"INSERT INTO DAFTAR_FAVORIT VALUES (CURRENT_TIMESTAMP, '{username}', '{judul}');")
         connection.commit()
     elif request.GET.get('addto') == "download":
-        cursor.execute(f"INSERT INTO TAYANGAN_TERUNDUH VALUES ('{id_tayangan}', '{username}', CURRENT_TIMESTAMP)")
+        cursor.execute(f"INSERT INTO TAYANGAN_TERUNDUH VALUES ('{id_tayangan}', '{username}', CURRENT_TIMESTAMP);")
         connection.commit()
     cursor.close()
     connection.close()
@@ -475,18 +476,13 @@ def add_to(request):
     print("berhasil")
     return redirect('show:tayangan')
 
-def add_tontonan(request):
+def add_tontonan(request, id):
     username = request.session['username']
-    judul = request.GET.get('judul')
-    id_tayangan = request.GET.get('id')
     connection = get_db_connection()
     cursor = connection.cursor()
-    if request.GET.get('addto') == "favorit":
-        cursor.execute(f"INSERT INTO DAFTAR_FAVORIT VALUES (CURRENT_TIMESTAMP, '{username}', '{judul}')")
-        connection.commit()
-    elif request.GET.get('addto') == "download":
-        cursor.execute(f"INSERT INTO TAYANGAN_TERUNDUH VALUES ('{id_tayangan}', '{username}', CURRENT_TIMESTAMP)")
-        connection.commit()
+    durasi = request.GET.get('durasi')
+    cursor.execute(f"INSERT INTO RIWAYAT_NONTON VALUES ('{id}', '{username}', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP + INTERVAL '{durasi} MINUTE');")
+    connection.commit()
     cursor.close()
     connection.close()
 

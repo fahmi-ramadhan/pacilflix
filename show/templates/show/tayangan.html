@@ -8,11 +8,13 @@
             <input type="text" id="searchInput" class="form-control my-3" placeholder="Cari Film, Series..." oninput="searchShows()">
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div id="searchResults" class="d-none">
+    <div class="max-w-screen-xl mx-auto p-3">
+        <form method="GET" action="" class="flex items-center">
+            <div class="w-full">
+                <input type="text" name="query" placeholder="Search for film or series..." class="w-full rounded-l-md px-4 py-2 border-t border-b border-l text-gray-800 border-gray-200 bg-white focus:outline-none">
             </div>
-        </div>
+            <button type="submit" class="px-4 py-2 border border-gray-300 bg-gray-200 text-gray-700 rounded-r-md hover:bg-gray-300 focus:outline-none">Search</button>
+        </form>
     </div>
     <div class="row mt-3">
         <div class="col-md-12">

@@ -78,14 +78,14 @@
                     <tr>
                         <td class="text-left">
                             <div class="mt-5">
-                                <input id="input-range" class="w-full rounded-lg overflow-hidden appearance-none bg-gray-400 h-4" type="range" min="1" max="100" step="1" value="50" />
+                                <input id="input-range" class="w-full rounded-lg overflow-hidden appearance-none bg-gray-400 h-4" type="range" min="1" max="{{ film.0 }}" step="1" value="50" />
                             </div>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <div class="button-group">
-                                <a href="" class="block rounded-md font-bold duration-200 hover:bg-blue-500 hover:text-white">
+                                <a id="watch-now-button" href="#" class="block rounded-md font-bold duration-200 hover:bg-blue-500 hover:text-white">
                                     Watch Now
                                 </a>
                                 <a href="{% url 'show:add_to' %}?judul={{ tayangan.0.1 }}&id={{ tayangan.0.0 }}&addto=download" class="block rounded-md font-bold duration-200 hover:bg-green-500 hover:text-white">
@@ -229,4 +229,26 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const rangeInput = document.getElementById("input-range");
+        const totalDuration = parseInt(rangeInput.max, 10);
+        const threshold = totalDuration * 0.7;
+        const watchNowButton = document.getElementById("watch-now-button");
+        const id = "{{ tayangan.0.0 }}";
+
+        watchNowButton.addEventListener("click", function (event) {
+            event.preventDefault();
+            const currentValue = parseInt(rangeInput.value, 10);
+            console.log(currentValue)
+
+            if (currentValue >= threshold) {
+                window.location.href = '/show/add-tontonan/' + id + '?durasi=' + currentValue;
+            } else {
+                alert("You need to adjust the slider to at least 70% to watch now.");
+            }
+        });
+    });
+</script>
 {% endblock content %}

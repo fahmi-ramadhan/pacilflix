@@ -1,145 +1,112 @@
 {% extends 'base.html' %}
+
 {% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h1>Daftar Tayangan PacilFlix</h1>
+            <input type="text" id="searchInput" class="form-control my-3" placeholder="Cari Film, Series..." oninput="searchShows()">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="searchResults" class="d-none">
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-12">
+            <h2>10 Tayangan Terbaik Minggu Ini</h2>
+            <div class="btn-group" role="group">
+                <a id="globalBtn"  class="btn btn-secondary" href="/show/tayangan/">Global</a>
+                <a id="localBtn"   class="btn btn-secondary" href="?lokal=true">Lokal</a>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Tayangan</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .action-button {
-            text-align: right;
-        }
-    </style>
-</head>
-<body>
-    <h1>Daftar Tayangan</h1>
+            </div>
+            <table class="table table-hover mt-3">
+                <thead>
+                    <tr>
+                        <th>Peringkat</th>
+                        <th>Judul</th>
+                        <th>Sinopsis</th>
+                        <th>Trailer</th>
+                        <th>Tanggal Rilis</th>
+                        <th>Total View 7 Hari Terakhir</th>
+                        <th>Detail Tayangan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tayangan in top_ten %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ tayangan.1 }}</td>
+                        <td>{{ tayangan.2 }}</td>
+                        <td><a href="{{ tayangan.3 }}" target="_blank">Watch Trailer</a></td>
+                        <td>{{ tayangan.4 }}</td>
+                        <td>{{ tayangan.5 }}</td>
+                        <td><a> Click here!</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <h2>Films</h2>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Synopsis</th>
+                        <th>Trailer</th>
+                        <th>Release Date</th>
+                        <th>Detail Film</th>
 
-    <!-- Daftar Tayangan -->
-    <h2>Tayangan</h2>
-    <table>
-        <tr>
-            <th>Judul</th>
-            <th>Sinopsis</th>
-            <th>Tanggal Rilis</th>
-            <th>Tayangan</th>
-        </tr>
-        {% for tayangan in tayangan %}
-        <tr>
-            <td>{{ tayangan.0 }}</td>
-            <td>{{ tayangan.1 }}</td>
-            <td>{{ tayangan.3 }}</td>
-            <td class="action-button">
-                <form action="/tayangan/{{ tayangan.4 }}" method="get">
-                    <button type="submit">Detail</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for film in films %}
+<tr>
+    <td>{{ film.1 }}</td>
+    <td>{{ film.2 }}</td>
+    <td><a href="{{ film.3 }}" target="_blank">Watch Trailer</a></td>
+    <td>{{ film.4 }}</td>
+    <td><a href="{% url 'show:detail' id_tayangan=film.0 %}">Click here!</a></td>
+</tr>
+{% endfor %}
 
-    <!-- Top 10 Tayangan -->
-    <h2>Top 10 Tayangan</h2>
-    <table>
-        <tr>
-            <th>Judul</th>
-            <th>Sinopsis</th>
-            <th>Tanggal Rilis</th>
-            <th>Total View (All Time)</th>
-            <th>Total View (7 Days)</th>
-            <th>Tayangan</th>
-        </tr>
-        {% for trailer in trailers %}
-        <tr>
-            <td>{{ trailer.0 }}</td>
-            <td>{{ trailer.1 }}</td>
-            <td>{{ trailer.3 }}</td>
-            <td>{{ trailer.4 }}</td>
-            <td>{{ trailer.5 }}</td>
-            <td class="action-button">
-                <form action="/detail_tayangan/{{ trailer.id }}" method="get">
-                    <button type="submit">Detail</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <h2>Series</h2>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Synopsis</th>
+                        <th>Trailer</th>
+                        <th>Release Date</th>
+                        <th> Detail Series</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for series in series %}
+<tr>
+    <td>{{ series.1 }}</td>
+    <td>{{ series.2 }}</td>
+    <td><a href="{{ series.3 }}" target="_blank">Watch Trailer</a></td>
+    <td>{{ series.4 }}</td>
+    <td><a href="{% url 'show:detail' id_tayangan=series.0 %}">Click here!</a></td>
+</tr>
+{% endfor %}
 
-    <!-- Daftar Film -->
-    <h2>Film</h2>
-    <table>
-        <tr>
-            <th>Judul</th>
-            <th>Sinopsis</th>
-            <th>Tanggal Rilis</th>
-            <th>Tayangan</th>
-        </tr>
-        {% for film_item in film %}
-        <tr>
-            <td>{{ film_item.0 }}</td>
-            <td>{{ film_item.1 }}</td>
-            <td>{{ film_item.3 }}</td>
-            <td class="action-button">
-                <form action="/detail_tayangan/{{ film_item.id }}" method="get">
-                    <button type="submit">Detail</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
-    <!-- Daftar Series -->
-    <h2>Series</h2>
-    <table>
-        <tr>
-            <th>Judul</th>
-            <th>Sinopsis</th>
-            <th>Tanggal Rilis</th>
-            <th> Tayangan</th>
-        </tr>
-        {% for series_item in series %}
-        <tr>
-            <td>{{ series_item.0 }}</td>
-            <td>{{ series_item.1 }}</td>
-            <td>{{ series_item.3 }}</td>
-            <td class="action-button">
-                <form action="/detail_tayangan/{{ series_item.id }}" method="get">
-                    <button type="submit">Detail</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
 
-    <!-- Daftar Pengguna -->
-    <h2>Pengguna yang Sedang Berlangganan</h2>
-    <table>
-        <tr>
-            <th>Username</th>
-            <th>Waktu Berakhir Langganan</th>
-        </tr>
-        {% for user in pengguna %}
-        <tr>
-            <td>{{ user.username }}</td>
-            <td>{{ user.end_date_time }}</td>
-        </tr>
-        {% endfor %}
-    </table>
 
-</body>
-</html>
 {% endblock content %}

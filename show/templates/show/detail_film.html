@@ -1,67 +1,172 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Halaman Film</title>
-</head>
-<body>
-    <h1>Halaman Film</h1>
-
-    <!-- Informasi Tayangan -->
-    <h2>Informasi Tayangan</h2>
-    <ul>
-        <li><strong>Judul:</strong> The Godfather</li>
-        <li><strong>Sinopsis:</strong> An organized crime dynasty's aging patriarch transfers control of his clandestine empire to his reluctant son.</li>
-        <li><strong>Asal Negara:</strong> USA</li>
-        <li><strong>Total View (All Time):</strong> 3</li>
-        <li><strong>Genre:</strong> 3</li>
-        <li><strong>Rating Rata-Rata:</strong>7.0</li>
-    </ul>
-
-    <!-- Informasi Film (jika ada) -->
-    <h2>Informasi Film</h2>
-    <ul>
-        <li><strong>Durasi Film:</strong> 75 menit</li>
-        <li><strong>Tanggal Rilis Film:</strong> 24-03-1972</li>
-        <!-- Jika ingin menampilkan video film, tambahkan tag video di sini -->
-    </ul>
-
-    <!-- Daftar Pemain (jika ada) -->
-    <h2>Pemain</h2>
-    <ul>
-        <li>Olga Ivanova</li>
-    </ul>
-
-    <!-- Daftar Penulis Skenario (jika ada) -->
-    <h2>Penulis Skenario</h2>
-    <ul>
-        <li> Sophia Mueller</li>
-    </ul>
-
-    <!-- Daftar Sutradara (jika ada) -->
-    <h2>Sutradara</h2>
-    <ul>
-        <li>Luisa Oliveira</li>
-    </ul>
-
-    <!-- Daftar Episode (jika ada) -->
-    <h2>Episode</h2>
-    <ul>
-        <li>0 - 12</li>
-    </ul>
-
-    <!-- Daftar Ulasan (jika ada) -->
-    <h2>Ulasan</h2>
-    <ul>
-        <li><strong>Username:</strong> user10</li>
-        <li><strong>Deskripsi:</strong> Filmya seru bgt!</li>
-        <li><strong>Rating:</strong> 7.0</li>
-    </ul>
-
-</body>
-</html>
+<style>
+    body {
+        background-color: #333740; /* Dark grey background for better contrast */
+        color: #f9f9f9; /* Light text for readability */
+    }
+    input[type="range"]::-webkit-slider-thumb {
+        width: 15px;
+        -webkit-appearance: none;
+        appearance: none;
+        height: 15px;
+        cursor: ew-resize;
+        background: #4A5568; /* Dark slider thumb */
+        box-shadow: -405px 0 0 400px #718096; /* Lighter grey for the slider */
+        border-radius: 50%;
+    }
+    .button-group {
+        display: flex;
+        justify-content: center; /* Centers buttons horizontally */
+        gap: 10px; /* Adds space between buttons */
+    }
+    a {
+        color: #63b3ed; /* Soft blue links */
+        text-decoration: none; /* Removes underline */
+        padding: 12px 24px; /* Padding for better touch area */
+        border: 1px solid transparent; /* Adds border for consistency */
+        transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effects */
+    }
+    a:hover {
+        color: #2b6cb0; /* Darker blue on hover */
+        background-color: #ffffff; /* White background on hover */
+        border-color: #2b6cb0; /* Dark blue border on hover */
+    }
+</style>
+<div class="mx-auto min-h-screen bg-[#242831] font-inter_tight pb-6">
+    <div class="container mx-auto px-4 py-4" style="cursor: auto;">
+        <div class="mb-12 text-center">
+            <h1 class="pt-16 pb-4 font-bold text-5xl drop-shadow-md"><span class="bg-gradient-to-r from-green-400 to-blue-500 text-transparent bg-clip-text">Film Details</span></h1>
+        </div>
+        <div class="flex flex-col">
+            <div class="mb-4">
+                <table class="table-auto w-full">
+                    <tr>
+                        <td class="text-left">
+                            <div class="mt-10 mb-2">
+                                <p class="text-xl">Title: {{ tayangan.0.1 }}</p>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">
+                            <div class="mt-5">
+                                <input id="input-range" class="w-full rounded-lg overflow-hidden appearance-none bg-gray-400 h-4" type="range" min="1" max="100" step="1" value="50" />
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="button-group">
+                                <a href="#" class="block rounded-md font-bold duration-200 hover:bg-blue-500 hover:text-white">
+                                    Watch Now
+                                </a>
+                                <a href="#" class="block rounded-md font-bold duration-200 hover:bg-green-500 hover:text-white">
+                                    Download Show
+                                </a>
+                                <a href="#" class="block rounded-md font-bold duration-200 hover:bg-red-500 hover:text-white">
+                                    Save to Favourites
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="flex flex-col">
+            <div class="mb-4">
+                <table class="table-auto w-full">
+                    <tr>
+                        <td class="text-left">
+                            <div class="mt-10 mb-2">
+                                <p class="text-xl">Total View: {{ tayangan.0.4 }}</p>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">
+                            <div class="mb-2">
+                                <p class="text-xl">Average Rating: {{ tayangan.0.6 }}</p>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">
+                            <div class="mb-2">
+                                <p class="text-xl">Synopsis: {{ tayangan.0.2 }}</p>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">
+                            <div class="mb-2 text-slate-100">
+                                <p class="text-xl">Film Duration: {{ film.0 }}</p>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">
+                            <div class="mb-2 text-slate-100">
+                                <p class="text-xl">Release Date: {{ film.1 }}</p>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">
+                            <div class="mb-2 text-slate-100">
+                                <p class="text-xl">Film URL: {{ film.2 }}</p>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="text-left">
+                            <div class="mb-2">
+                                <p class="text-xl">Genre: {{ tayangan.0.5 }}</p>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">
+                            <div class="mb-2">
+                                <p class="text-xl">Country of Origin: {{ tayangan.0.3 }}</p>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-left pt-8">
+                            <div class="mb-2">
+                                <p class="text-xl">Actors:</p>
+                            </div>
+                            {% for actor in pemain %}
+                            <span style="margin-left: 20px;">- {{ actor.0 }}</span><br>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">
+                            <div class="mb-2">
+                                <p class="text-xl">Screenwriters:</p>
+                            </div>
+                            {% for writer in penulis %}
+                            <span style="margin-left: 20px;">- {{ writer.0 }}</span><br>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">
+                            <div class="mb-2">
+                                <p class="text-xl">Director:</p>
+                            </div>
+                            {% for director in sutradara %}
+                            <span style="margin-left: 20px;">- {{ director.0 }}</span><br>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}

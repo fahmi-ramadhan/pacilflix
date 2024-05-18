@@ -1,76 +1,283 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Halaman Series</title>
-</head>
-<body>
-    <h1>Halaman Series</h1>
+<div class="mx-auto min-h-screen bg-[#242831] font-inter_tight pb-6">
+    <div class="container mx-auto px-4 py-4" style="cursor: auto;">
+        <div class="mb-12 text-slate-100 text-center">
+            <h1 class="pt-16 pb-4 font-bold text-5xl drop-shadow-md">
+                <span class="bg-gradient-to-r from-green-400 to-blue-500 text-transparent bg-clip-text">Series</span> page
+            </h1>
+        </div>
+        <div class="flex flex-col">
+            <div class="mb-4">
+                <table>
+                    <tr>
+                        <td class="text-left">
+                            <div class="mt-10 mb-2 text-green-300">
+                                <p class="text-xl">Title: {{ tayangan.0.1 }}</p>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">
+                            <div class="mt-3 mb-2 text-green-300">
+                                <p class="text-xl">Episodes:</p>
+                            </div>
+                            <ul>
+                                {% for eps in episode %}
+                                    {% if eps.judul and eps.sub_judul %}
+                                        <li class="mb-6">
+                                            <a href="{% url 'show:episode' judul=eps.judul sub_judul=eps.sub_judul %}" class="mt-5 w-full block rounded-md font-bold border border-gray-600 px-12 py-3 duration-200 text-green-300 border-green-300 hover:bg-green-300 hover:text-[#242831]">
+                                                Episode {{ eps.sub_judul }}
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                        <li class="mb-6">
+                                            <p class="mt-5 w-full block rounded-md font-bold border border-gray-600 px-12 py-3 duration-200 text-green-300 border-green-300 hover:bg-green-300 hover:text-[#242831]">
+                                                Episode {{ forloop.counter }}
+                                            </p>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="flex flex-col">
+            <div class="mb-4">
+                <table>
+                    <tr>
+                        <td class="text-center">
+                            <a href="#" class="mt-5 w-full block rounded-md font-bold border border-gray-600 px-12 py-3 duration-200 text-yellow-300 border-yellow-300 hover:bg-yellow-300 hover:text-[#242831]">
+                                Download show
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-center">
+                            <a href="#" class="mt-5 w-full block rounded-md font-bold border border-gray-600 px-12 py-3 duration-200 text-yellow-300 border-yellow-300 hover:bg-yellow-300 hover:text-[#242831]">
+                                Save to favourites
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="flex flex-col">
+            <div class="mb-4">
+                <table>
+                    <tr>
+                        <td class="text-left">
+                            {% for t in tayangan %}
+                            <div class="mt-10 mb-2 text-blue-300">
+                                <p class="text-xl">Total view: {{t.4}}</p>
+                            </div>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">
+                            {% for t in tayangan %}
+                            <div class="mb-2 text-blue-300">
+                                <p class="text-xl">Average rating: {{t.6}}</p>
+                            </div>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">
+                            {% for t in tayangan %}
+                            <div class="mb-2 text-blue-300">
+                                <p class="text-xl">Synopsis: {{t.2}}</p>
+                            </div>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">
+                            {% for t in tayangan %}
+                            <div class="mb-2 text-blue-300">
+                                <p class="text-xl">Genre: {{t.5}}</p>
+                            </div>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">
+                            {% for t in tayangan %}
+                            <div class="mb-2 text-blue-300">
+                                <p class="text-xl">Country of origin: {{t.3}}</p>
+                            </div>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-left pt-8">
+                            <div class="mb-2 text-purple-300">
+                                <p class="text-xl">Actors:</p>
+                            </div>
+                            {% for actor in pemain %}
+                            <span style="margin-left: 20px;" class="text-purple-300">- {{ actor.0 }}</span><br>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">
+                            <div class="mb-2 text-purple-300">
+                                <p class="text-xl">Screenwriters:</p>
+                            </div>
+                            {% for writer in penulis %}
+                            <span style="margin-left: 20px;" class="text-purple-300">- {{ writer.0}}</span><br>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">
+                            <div class="mb-2 text-purple-300">
+                                <p class="text-xl">Director:</p>
+                            </div>
+                            {% for director in sutradara %}
+                            <span style="margin-left: 20px;" class="text-purple-300">- {{ director.0 }}</span><br>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="container mx-auto px-4 py-4">
+            <div class="mb-12 text-slate-100 text-center">
+                <h1 class="pt-16 pb-4 font-bold text-5xl drop-shadow-md"><span class="bg-gradient-to-r from-green-400 to-blue-500 text-transparent bg-clip-text">Review</span></h1>
+            </div>
+            <!-- Modal toggle -->
+            <button data-modal-target="default-modal" data-modal-toggle="default-modal" class="mt-5 block rounded-md font-bold border border-gray-600 px-12 py-3 duration-200 text-green-300 border-green-300 hover:bg-green-300 hover:text-[#242831]" type="button">
+                Give review
+            </button>
 
-    <!-- Informasi Tayangan -->
-    <h2>Informasi Tayangan</h2>
-    <ul>
-        <li><strong>Judul:</strong> The Godfather</li>
-        <li><strong>Total View:</strong> 3</li>
-        <li><strong>Rating Rata-Rata:</strong> 7.0</li>
-        <li><strong>Sinopsis:</strong> An organized crime dynasty's aging patriarch transfers control of his clandestine empire to his reluctant son.</li>
-        <li><strong>Genre:</strong>
-            <ul>
-                <li>Crime</li>
-                <li>Drama</li>
-            </ul>
-        </li>
-        <li><strong>Asal Negara:</strong> USA</li>
-    </ul>
+            <!-- Main modal -->
+            <div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 overflow-auto bg-gray-900 bg-opacity-50 flex justify-center items-center">
+                <div class="bg-[#242831] rounded-lg overflow-hidden shadow-xl max-w-lg w-full">
+                    <!-- Modal content -->
+                    <div class="flex items-center justify-between p-4 border-b">
+                        <h3 class="text-lg font-semibold text-white">Give your review</h3>
+                        <button type="button" class="text-gray-400 hover:text-gray-500 focus:outline-none" data-modal-hide="default-modal">
+                            <svg class="w-6 h-6" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M14.7 14.7c-.2.2-.5.2-.7 0L10 10.707 6.707 14c-.2.2-.5.2-.7 0-.2-.2-.2-.5 0-.7L9.293 10 6 6.707c-.2-.2-.2-.5 0-.7.2-.2.5-.2.7 0L10 9.293l3.293-3.293c.2-.2.5-.2.7 0 .2.2.2.5 0 .7L10.707 10l3.293 3.293c.2.2.2.5 0 .7z" fill="currentColor"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <!-- Modal body -->
+                    <div class="p-4">
+                        <form method="post" id="post-form" action="{% url 'show:save_review' %}">
+                            {% csrf_token %}
+                            <div class="mb-4">
+                                <label for="deskripsi" class="block text-green-300 font-bold mb-2">Review description:</label>
+                                <textarea name="deskripsi" id="deskripsi" class="w-full px-3 py-2 border rounded-lg bg-gray-700 text-green-300"></textarea>
+                            </div>
+                            <div class="mb-4">
+                                <label for="rating" class="block text-green-300 font-bold mb-2">Rating:</label>
+                                <input type="number" name="rating" id="rating" class="w-full px-3 py-2 border rounded-lg bg-gray-700 text-green-300">
+                            </div>
+                            <div class="flex items-center justify-end p-4 border-t">
+                                <button type="submit" id="submit" class="mt-5 block rounded-md font-bold border border-gray-600 px-12 py-3 duration-200 text-green-300 border-green-300 hover:bg-green-300 hover:text-[#242831]">
+                                    Submit
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- Modal footer -->
+                </div>
+            </div>
+        </div>
 
-    <!-- Daftar Pemain -->
-    <h2>Pemain</h2>
-    <ul>
-        <li>Olga Ivanova</li>
-    </ul>
+        <!-- Daftar ulasan -->
+        <div class="container mx-auto px-4 py-4" id="review-container">
+        </div>
+    </div>
+</div>
 
-    <!-- Daftar Penulis Skenario -->
-    <h2>Penulis Skenario</h2>
-    <ul>
-        <li>Sophia Mueller</li>
-    </ul>
 
-    <!-- Sutradara -->
-    <h2>Sutradara</h2>
-    <ul>
-        <li>Luisa Oliveira</li>
-    </ul>
-
-    <!-- Daftar Episode -->
-    <h2>Episode</h2>
-    <ul>
-        <li>0 - 12</li>
-    </ul>
-
-    <!-- Tombol Unduh Tayangan -->
-    <form action="/unduh_tayangan" method="post">
-        <button type="submit">Unduh Tayangan</button>
-    </form>
-
-    <!-- Tombol Favorit Tayangan -->
-    <form action="/tambah_ke_favorit" method="post">
-        <button type="submit">Favoritkan Tayangan</button>
-    </form>
-
-    <!-- Bagian Ulasan -->
-    <h2>Ulasan</h2>
-    <ul>
-        <li>
-            <strong>Username:</strong> user10<br>
-            <strong>Deskripsi:</strong> Filmya seru bgt!<br>
-            <strong>Rating:</strong> 7.0
-        </li>
-    </ul>
-
-</body>
-</html>
 {% endblock content %}
+
+<script>
+    const modalToggleButtons = document.querySelectorAll('[data-modal-toggle]');
+    const modalCloseButtons = document.querySelectorAll('[data-modal-hide]');
+    const modal = document.getElementById('default-modal');
+
+    // Function to toggle modal visibility
+    function toggleModal() {
+        modal.classList.toggle('hidden'); // Toggle visibility of the modal
+    }
+
+    // Add click event listener to each modal toggle button
+    modalToggleButtons.forEach(button => {
+        button.addEventListener('click', toggleModal);
+    });
+
+    // Add click event listener to each modal close button
+    modalCloseButtons.forEach(button => {
+        button.addEventListener('click', toggleModal);
+    });
+
+    function updateReview() {
+        fetch("{% url 'show:update_review' judul=tayangan.0.judul %}")
+        .then(response => response.json())
+        .then(data => {
+            const reviewContainer = document.getElementById('review-container');
+            reviewContainer.innerHTML = ''; // Clear previous content
+            
+            data.ulasan.forEach(review => {
+                const listItem = document.createElement('li');
+                listItem.classList.add('text-slate-100', 'mb-4');
+                listItem.innerHTML = `
+                    <span style="margin-left: 20px;" class="text-green-300">Username: ${review.username}</span><br>
+                    <span style="margin-left: 20px;" class="text-green-300">Deskripsi: ${review.deskripsi}</span><br>
+                    <span style="margin-left: 20px;" class="text-green-300">Rating: ${review.rating}</span><br>
+                `;
+                reviewContainer.appendChild(listItem);
+            });
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function addReview(event) {
+        event.preventDefault();
+        const deskripsi = document.getElementById('deskripsi').value;
+        const rating = document.getElementById('rating').value;
+        const idTayangan = "{{ tayangan.0.id }}";
+        
+        // Send a POST request to save the new review
+        fetch("{% url 'show:save_review' %}", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': "{{ csrf_token }}"
+            },
+            body: JSON.stringify({
+                id_tayangan: idTayangan,
+                deskripsi: deskripsi,
+                rating: rating
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                // Update the review container with the new data
+                updateReview();
+                // Reset form
+                document.getElementById("post-form").reset();
+                // Close modal
+                toggleModal();
+            } else {
+                throw new Error('Failed to add review');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+    updateReview()
+    // Call the updateReview function when the page loads
+
+    const postForm = document.getElementById('post-form');
+    postForm.addEventListener('submit', addReview);
+    
+</script>

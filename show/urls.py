@@ -1,12 +1,13 @@
-from django.urls import path
+from django.urls import path, re_path
 from show import views
 
-urlpatterns = [
-    path('trailer/', views.trailers, name='show'),
-    path('tayangan/', views.show_tayangan, name='tayangan'),
-    path('detail_film/', views.detil , name='detil_film'),
-    path('series/', views.series, name='series'),
-    path('episodes/', views.episodes, name='episode_series'),
-    path('review/', views.review, name='review'),
+app_name = 'show'
 
- ]
+urlpatterns = [
+    path('trailer/', views.trailers, name='trailer'),
+    path('tayangan/', views.show_tayangan, name='tayangan'),
+    re_path(r'detail/(?P<id_tayangan>[0-9a-fA-F-]{36})/', views.detil_tayangan, name='detail'),  # UUID regex
+    path('<str:judul>/episode/<str:sub_judul>/', views.episode_detail, name='episode'),
+    path('save_review', views.save_review, name='save_review'),
+    path('<str:judul>/update_review/', views.update_review, name='update_update'),
+]

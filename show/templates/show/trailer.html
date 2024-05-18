@@ -98,43 +98,5 @@
     </div>
 </div>
 
-<script>
-    // Fungsi untuk memuat tayangan berdasarkan tipe (global atau lokal)
-    const loadTrailers = (type) => {
-        fetch(`/trailers?type=${type}`)
-            .then(response => response.json())
-            .then(data => {
-                // Perbarui tabel dengan data yang diperoleh dari server
-                renderTable(data.top_trailers, document.getElementById('topTrailers'), 'Top 10 Trailers');
-            })
-            .catch(error => console.error('Error:', error));
-    };
-
-    // Fungsi untuk memperbarui tabel dengan data yang diperoleh
-    const renderTable = (data, container, title) => {
-        // Buat tabel HTML dari data yang diberikan
-        let tableHTML = `<h2>${title}</h2><table class="table table-hover mt-3"><thead><tr><th>Peringkat</th><th>Judul</th><th>Sinopsis</th><th>Trailer</th><th>Tanggal Rilis</th><th>Total View 7 Hari Terakhir</th></tr></thead><tbody>`;
-        data.forEach((tayangan, index) => {
-            tableHTML += `<tr><td>${index + 1}</td><td>${tayangan[0]}</td><td>${tayangan[1]}</td><td><a href="${tayangan[2]}" target="_blank">Watch Trailer</a></td><td>${tayangan[3]}</td><td>${tayangan[4]}</td></tr>`;
-        });
-        tableHTML += `</tbody></table>`;
-        container.innerHTML = tableHTML;
-    };
-
-    // Ketika dokumen siap, muat tayangan global secara default
-    document.addEventListener('DOMContentLoaded', () => {
-        loadTrailers('global');
-    });
-
-    // Tambahkan event listener untuk tombol global
-    document.getElementById('globalBtn').addEventListener('click', () => {
-        loadTrailers('global');
-    });
-
-    // Tambahkan event listener untuk tombol lokal
-    document.getElementById('localBtn').addEventListener('click', () => {
-        loadTrailers('local');
-    });
-</script>
 
 {% endblock content %}

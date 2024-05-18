@@ -6,11 +6,14 @@ from utils.db_utils import get_db_connection
 from django.views.decorators.http import require_http_methods
 from django.core.serializers.json import DjangoJSONEncoder
 
-def execute_sql_query(execute_sql_query, params=None):
+def execute_sql_query(sql_query, params=None):
+    print("Executing SQL Query:", sql_query)
+    print("With Parameters:", params)
     with get_db_connection() as conn:
         with conn.cursor() as cursor:
-            cursor.execute(execute_sql_query, params or [])
+            cursor.execute(sql_query, params or [])
             return cursor.fetchall()
+
 
 def index(request):
     return render(request, 'show/index.html')
@@ -55,7 +58,7 @@ def trailers(request):
         base_query += """
         WHERE 
             EXISTS (
-                SELECT 1 FROM PENGGUNA p WHERE p.id_tayangan = t.id AND p.negara_asal = %s
+                SELECT 1 FROM PENGGUNA p WHERE p.id_tayangan = t.id AND p.asal_negara= %s
             )
         """
         query_params = [user_country]
@@ -108,12 +111,15 @@ def trailers(request):
 
 
 def show_tayangan(request):
+    is_Lokal = request.GET.get('lokal') == 'true'
     context = {
         "is_logged_in": False
     }
-    if "username" in request.session:
+    username = request.session.get("username")
+
+    if username:
         context["is_logged_in"] = True
-        context["username"] = request.session["username"]
+        context["username"] = username
         
     tayangan = execute_sql_query("""
         SELECT 
@@ -121,48 +127,63 @@ def show_tayangan(request):
             sinopsis_trailer, 
             url_video_trailer, 
             to_char(release_date_trailer, 'DD-MM-YYYY') as release_date_trailer
-        FROM
-            TAYANGAN
-        """)
-    
-    top_ten = execute_sql_query("""
-        SELECT 
-            TAYANGAN.judul,
-            TAYANGAN.sinopsis_trailer,
-            TAYANGAN.url_video_trailer,
-            to_char(TAYANGAN.release_date_trailer, 'DD-MM-YYYY') as release_date_trailer,
-            COALESCE(total_view_all_time.total_view_all_time, 0) AS total_view_all_time,
-            COALESCE(total_view_7_days.total_view_7_days, 0) AS total_view_7_days
-        FROM 
-            TAYANGAN
-        LEFT JOIN (
-            SELECT 
-                id_tayangan, 
-                COUNT(*) AS total_view_7_days
-            FROM 
-                riwayat_nonton
-            WHERE 
-                end_date_time >= NOW() - INTERVAL '7 days'
-            GROUP BY 
-                id_tayangan
-        ) AS total_view_7_days ON TAYANGAN.id = total_view_7_days.id_tayangan
-        LEFT JOIN (
-            SELECT 
-                id_tayangan, 
-                COUNT(*) AS total_view_all_time
-            FROM 
-                riwayat_nonton
-            GROUP BY 
-                id_tayangan
-        ) AS total_view_all_time ON TAYANGAN.id = total_view_all_time.id_tayangan
-        ORDER BY 
-            total_view_all_time DESC,
-            TAYANGAN.release_date_trailer DESC
-        LIMIT 10;
+        FROM TAYANGAN
     """)
     
+    top_ten = execute_sql_query("""
+    SELECT 
+    t.id,
+    t.judul,
+    t.sinopsis_trailer,
+    t.url_video_trailer,
+    to_char(t.release_date_trailer, 'DD-MM-YYYY') as release_date_trailer,
+    COALESCE(tv_all_time.total_view_all_time, 0) AS total_view_all_time,
+    COALESCE(tv_7_days.total_view_7_days, 0) AS total_view_7_days
+FROM 
+    TAYANGAN t
+LEFT JOIN 
+    (
+        SELECT 
+            rn.id_tayangan, 
+            COUNT(*) AS total_view_7_days
+        FROM 
+            riwayat_nonton rn
+        INNER JOIN 
+            TAYANGAN t ON rn.id_tayangan = t.id
+        INNER JOIN
+            FILM f ON f.id_tayangan = t.id
+        WHERE 
+            rn.end_date_time >= NOW() - INTERVAL '7 days'
+            AND EXTRACT(EPOCH FROM (rn.end_date_time - rn.start_date_time)) >= 0.7 * f.durasi_film
+        GROUP BY rn.id_tayangan
+    ) as tv_7_days ON t.id = tv_7_days.id_tayangan
+LEFT JOIN 
+    (
+        SELECT 
+            rn.id_tayangan, 
+            COUNT(*) AS total_view_all_time
+        FROM 
+            riwayat_nonton rn
+        INNER JOIN 
+            TAYANGAN t ON rn.id_tayangan = t.id
+        INNER JOIN
+            FILM f ON f.id_tayangan = t.id
+        WHERE 
+            EXTRACT(EPOCH FROM (rn.end_date_time - rn.start_date_time)) >= 0.7 * f.durasi_film
+        GROUP BY rn.id_tayangan
+    ) as tv_all_time ON t.id = tv_all_time.id_tayangan
+ORDER BY 
+    tv_7_days.total_view_7_days DESC,
+    tv_all_time.total_view_all_time DESC,
+    t.release_date_trailer DESC
+LIMIT 10;
+
+
+    """)
+
     film = execute_sql_query("""
         SELECT 
+            id,                 
             judul,
             sinopsis_trailer, 
             url_video_trailer, 
@@ -179,6 +200,7 @@ def show_tayangan(request):
     
     series = execute_sql_query("""
         SELECT 
+            id,                   
             judul,
             sinopsis_trailer, 
             url_video_trailer, 
@@ -193,26 +215,246 @@ def show_tayangan(request):
             TAYANGAN.judul ASC;
         """)
 
-    pengguna = execute_sql_query("""
-        SELECT
-            username,
-            to_char(end_date_time, 'DD-MM-YYYY') as end_date_time
-        FROM
-            TRANSACTION
-        WHERE end_date_time > NOW()
-        ORDER BY
-            username ASC;
-        """)
-    
-    context.update({'tayangan': tayangan, 'trailers': top_ten, 'film': film, 'series': series, 'pengguna': pengguna})
+    if username:
+        top_lokal = execute_sql_query("""
+            SELECT 
+                TAYANGAN.judul,
+                TAYANGAN.sinopsis_trailer,
+                TAYANGAN.url_video_trailer,
+                to_char(TAYANGAN.release_date_trailer, 'DD-MM-YYYY') as release_date_trailer,
+                COALESCE(total_view_all_time.total_view_all_time, 0) AS total_view_all_time,
+                COALESCE(total_view_7_days.total_view_7_days, 0) AS total_view_7_days
+            FROM 
+                TAYANGAN
+            LEFT JOIN (
+                SELECT 
+                    id_tayangan, 
+                    COUNT(*) AS total_view_7_days
+                FROM 
+                    riwayat_nonton
+                WHERE 
+                    end_date_time >= NOW() - INTERVAL '7 days'
+                GROUP BY id_tayangan
+            ) AS total_view_7_days ON TAYANGAN.id = total_view_7_days.id_tayangan
+            LEFT JOIN (
+                SELECT 
+                    id_tayangan, 
+                    COUNT(*) AS total_view_all_time
+                FROM 
+                    riwayat_nonton
+                GROUP BY id_tayangan
+            ) AS total_view_all_time ON TAYANGAN.id = total_view_all_time.id_tayangan
+            WHERE
+                TAYANGAN.asal_negara = (SELECT negara_asal FROM PENGGUNA WHERE username = %s)
+            ORDER BY 
+                total_view_all_time DESC,
+                TAYANGAN.release_date_trailer DESC
+            LIMIT 10;
+        """, [username])
+        context['top_lokal'] = top_lokal
+    else:
+        context['top_lokal'] = []
+    context.update({'tayangan': tayangan, 'top_ten': top_ten if not is_Lokal else top_lokal, 'films': film, 'series': series})
     return render(request, "show/tayangan.html", context)
 
-def detil(request):
-    return render(request, 'show/detail_film.html')
-def series(request):
-    return render(request, 'show/series.html')
-def episodes(request):
-    return render(request, 'show/episodes.html')
-def review(request):
-    return render(request, 'show/review.html')
+
+def detil_tayangan(request, id_tayangan):
+    context = {
+        "is_logged_in": request.session.get("username", False)
+    }
+
+    if context["is_logged_in"]:
+        context["username"] = request.session["username"]
+    
+    # Fetching main tayangan details
+    tayangan = execute_sql_query("""
+    SELECT 
+        t.id,
+        t.judul,
+        t.sinopsis, 
+        t.asal_negara, 
+        COALESCE(total_view_all_time.total_view_all_time, 0) AS total_view_all_time,
+        STRING_AGG(DISTINCT gt.genre, ', ') AS genre,
+        ROUND(COALESCE(AVG(u.rating),0), 1) AS rating_rata_rata
+    FROM
+        TAYANGAN AS t
+    LEFT JOIN (
+        SELECT 
+            id_tayangan, 
+            COUNT(*) AS total_view_all_time
+        FROM 
+            riwayat_nonton
+        GROUP BY 
+            id_tayangan
+    ) AS total_view_all_time ON t.id = total_view_all_time.id_tayangan
+    LEFT JOIN genre_tayangan AS gt ON t.id = gt.id_tayangan
+    LEFT JOIN ULASAN AS u ON t.id = u.id_tayangan
+    WHERE
+        t.id = %s
+    GROUP BY
+        t.id, t.judul, t.sinopsis, t.asal_negara, total_view_all_time.total_view_all_time
+    """, [id_tayangan])
+
+    # Fetching film specific details
+    film_data = execute_sql_query("""
+        SELECT
+            durasi_film,
+            release_date_film,
+            url_video_film
+        FROM 
+            FILM
+        WHERE
+            id_tayangan = %s
+    """, [id_tayangan])
+
+    # Check if film_data is fetched correctly and update the context
+    if film_data:
+        context.update({
+            'film': film_data[0]
+        })
+    
+    pemain = execute_sql_query("""
+    SELECT
+        nama
+    FROM 
+        CONTRIBUTORS
+    LEFT JOIN memainkan_tayangan mt ON mt.id_pemain = CONTRIBUTORS.id
+    LEFT JOIN tayangan t ON t.id = mt.id_tayangan
+    WHERE
+        t.id = %s
+    GROUP BY
+        nama;
+    """, [id_tayangan])
+
+    penulis = execute_sql_query("""
+    SELECT
+        nama
+    FROM 
+        CONTRIBUTORS
+    LEFT JOIN menulis_skenario_tayangan ms ON ms.id_penulis_skenario = CONTRIBUTORS.id
+    LEFT JOIN tayangan t ON t.id = ms.id_tayangan
+    WHERE
+        t.id = %s
+    GROUP BY
+        nama;
+    """, [id_tayangan])
+
+    sutradara = execute_sql_query("""
+    SELECT
+        nama
+    FROM 
+        CONTRIBUTORS
+    LEFT JOIN tayangan t ON t.id_sutradara = CONTRIBUTORS.id
+    WHERE
+        t.id = %s
+    GROUP BY
+        nama;
+    """, [id_tayangan])
+
+    context.update({
+        'tayangan': tayangan,
+        'pemain': pemain,
+        'penulis': penulis,
+        'sutradara': sutradara,
+    })
+
+    # Check if the tayangan is a film or a series and choose the appropriate template
+    template_name = 'show/detail_film.html' if film_data else 'show/series.html'
+
+    return render(request, template_name, context)
+
+
+def episode_detail(request, judul, sub_judul):
+    context = {
+        "is_logged_in": False
+    }
+    if "username" in request.session:
+        context["is_logged_in"] = True
+        context["username"] = request.session["username"]
+        
+    episode_khusus = execute_sql_query("""
+        SELECT
+            e.sub_judul,
+            t.judul,
+            e.sinopsis,
+            e.durasi,
+            e.url_video,
+            e.release_date
+        FROM episode e
+        LEFT JOIN tayangan t ON t.id= e.id_series
+        WHERE
+            t.judul = %s AND
+            e.sub_judul = %s
+        ORDER BY
+            e.sub_judul ASC;
+        """, (judul, sub_judul))
+    
+    episode = execute_sql_query("""
+        SELECT
+            e.sub_judul,
+            t.judul
+        FROM episode e
+        LEFT JOIN tayangan t ON t.id= e.id_series
+        WHERE
+            t.judul = %s
+        ORDER BY
+            e.sub_judul ASC;
+        """, (judul,))
+    
+    release_episode = execute_sql_query("""
+        SELECT
+            sub_judul,release_date
+        FROM EPISODE e
+        LEFT JOIN SERIES s ON s.id_tayangan = e.id_series
+        WHERE 
+            e.release_date <= CURRENT_DATE;
+        """)
+    context.update({'episode':episode,'episode_khusus':episode_khusus,'release_episode': release_episode})
+    return render(request, "episodes.html", context)
+
+
+def save_review(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        deskripsi = data['deskripsi']
+        rating = data['rating']
+        id_tayangan = data['id_tayangan']
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        
+        # Lakukan penyisipan data ke dalam basis data
+        try:
+            execute_sql_query("""
+                INSERT INTO ulasan (
+                    id_tayangan,
+                    username, 
+                    timestamp, 
+                    rating,
+                    deskripsi
+                )
+                VALUES (%s, %s, %s, %s, %s);
+                """,
+                (
+                    id_tayangan,
+                    request.session.get("username", ""), 
+                    timestamp,
+                    rating,
+                    deskripsi
+                )
+            )
+            return JsonResponse({"status": "success", "message": "Review added successfully."}, status=201)
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)}, status=500)
+    else:
+        return JsonResponse({"status": "error", "message": "Method not allowed."}, status=405)
+
+def update_review(request, judul):
+    ulasan = execute_sql_query("""
+        SELECT username, deskripsi, rating
+        FROM ULASAN
+        LEFT JOIN tayangan t ON t.id = ULASAN.id_tayangan
+        WHERE t.judul = %s
+        ORDER BY ulasan.timestamp DESC;
+    """, (judul,))
+    
+    return JsonResponse({'ulasan': ulasan}, content_type='application/json')
 

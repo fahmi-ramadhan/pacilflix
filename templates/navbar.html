@@ -3,7 +3,7 @@
 		{% if username == 'Guest' %}
 		<a class="navbar-brand" href="{% url 'authentication:index' %}">Pacilflix</a>
 		{% else %}
-		<a class="navbar-brand" href="{% url 'show' %}">Pacilflix</a>
+		<a class="navbar-brand" href="{% url 'show:tayangan' %}">Pacilflix</a>
 		{% endif %}
 		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
@@ -12,11 +12,11 @@
 			<ul class="navbar-nav ms-auto">
 				{% if username == 'Guest' %}
 				<li class="nav-item">
-					<a class="nav-link" href="{% url 'show' %}">Shows</a>
+					<a class="nav-link" href="{% url 'show:trailer' %}">Shows</a>
 				</li>
 				{% else %}
 				<li class="nav-item">
-					<a class="nav-link" href="{% url 'show' %}">Shows</a>
+					<a class="nav-link" href="{% url 'show:tayangan' %}">Shows</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="{% url 'contributor' %}">Contributors</a>

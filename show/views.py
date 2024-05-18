@@ -472,6 +472,7 @@ def add_to(request):
     cursor.close()
     connection.close()
 
+    print("berhasil")
     return redirect('show:tayangan')
 
 def add_tontonan(request):

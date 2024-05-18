@@ -1,275 +1,119 @@
 {% extends 'base.html' %}
 
+{% block meta %}
+{% endblock meta %}
 {% block content %}
-<div class="mx-auto min-h-screen bg-[#242831] font-inter_tight pb-6">
-    <div class="container mx-auto px-4 py-4" style="cursor: auto;">
-        <div class="mb-12 text-slate-100 text-center">
-            <h1 class="pt-16 pb-4 font-bold text-5xl drop-shadow-md">
-                <span class="bg-gradient-to-r from-green-400 to-blue-500 text-transparent bg-clip-text">Series</span> page
-            </h1>
+<div class="container-fluid bg-dark text-light min-vh-100 py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="display-4 text-primary">Series Page</h1>
         </div>
-        <div class="flex flex-col">
-            <div class="mb-4">
-                <table>
-                    <tr>
-                        <td class="text-left">
-                            <div class="mt-10 mb-2 text-green-300">
-                                <p class="text-xl">Title: {{ tayangan.0.1 }}</p>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="text-left">
-                            <div class="mt-3 mb-2 text-green-300">
-                                <p class="text-xl">Episodes:</p>
-                            </div>
-                            <ul>
-                                {% for eps in episode %}
-                                <li class="mb-6">
-                                    <p class="mt-5 w-full block rounded-md font-bold border border-gray-600 px-12 py-3 duration-200 text-green-300 border-green-300 hover:bg-green-300 hover:text-[#242831]">
-                                        <a href={% url 'show:episode' judul=tayangan.0.1 sub_judul=eps.1 %}>{{ eps.1 }}</a>
-                                    </p>
-                                </li>
-                                {% endfor %}
-                            </ul>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-        <div class="flex flex-col">
-            <div class="mb-4">
-                <table>
-                    <tr>
-                        <td class="text-center">
-                            <a href="#" class="mt-5 w-full block rounded-md font-bold border border-gray-600 px-12 py-3 duration-200 text-yellow-300 border-yellow-300 hover:bg-yellow-300 hover:text-[#242831]">
-                                Download show
-                            </a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="text-center">
-                            <a href="#" class="mt-5 w-full block rounded-md font-bold border border-gray-600 px-12 py-3 duration-200 text-yellow-300 border-yellow-300 hover:bg-yellow-300 hover:text-[#242831]">
-                                Save to favourites
-                            </a>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-        <div class="flex flex-col">
-            <div class="mb-4">
-                <table>
-                    <tr>
-                        <td class="text-left">
-                            {% for t in tayangan %}
-                            <div class="mt-10 mb-2 text-blue-300">
-                                <p class="text-xl">Total view: {{t.4}}</p>
-                            </div>
-                            {% endfor %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="text-left">
-                            {% for t in tayangan %}
-                            <div class="mb-2 text-blue-300">
-                                <p class="text-xl">Average rating: {{t.6}}</p>
-                            </div>
-                            {% endfor %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="text-left">
-                            {% for t in tayangan %}
-                            <div class="mb-2 text-blue-300">
-                                <p class="text-xl">Synopsis: {{t.2}}</p>
-                            </div>
-                            {% endfor %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="text-left">
-                            {% for t in tayangan %}
-                            <div class="mb-2 text-blue-300">
-                                <p class="text-xl">Genre: {{t.5}}</p>
-                            </div>
-                            {% endfor %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="text-left">
-                            {% for t in tayangan %}
-                            <div class="mb-2 text-blue-300">
-                                <p class="text-xl">Country of origin: {{t.3}}</p>
-                            </div>
-                            {% endfor %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="text-left pt-8">
-                            <div class="mb-2 text-purple-300">
-                                <p class="text-xl">Actors:</p>
-                            </div>
-                            {% for actor in pemain %}
-                            <span style="margin-left: 20px;" class="text-purple-300">- {{ actor.0 }}</span><br>
-                            {% endfor %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="text-left">
-                            <div class="mb-2 text-purple-300">
-                                <p class="text-xl">Screenwriters:</p>
-                            </div>
-                            {% for writer in penulis %}
-                            <span style="margin-left: 20px;" class="text-purple-300">- {{ writer.0}}</span><br>
-                            {% endfor %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="text-left">
-                            <div class="mb-2 text-purple-300">
-                                <p class="text-xl">Director:</p>
-                            </div>
-                            {% for director in sutradara %}
-                            <span style="margin-left: 20px;" class="text-purple-300">- {{ director.0 }}</span><br>
-                            {% endfor %}
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-        <div class="container mx-auto px-4 py-4">
-            <div class="mb-12 text-slate-100 text-center">
-                <h1 class="pt-16 pb-4 font-bold text-5xl drop-shadow-md"><span class="bg-gradient-to-r from-green-400 to-blue-500 text-transparent bg-clip-text">Review</span></h1>
-            </div>
-            <!-- Modal toggle -->
-            <button data-modal-target="default-modal" data-modal-toggle="default-modal" class="mt-5 block rounded-md font-bold border border-gray-600 px-12 py-3 duration-200 text-green-300 border-green-300 hover:bg-green-300 hover:text-[#242831]" type="button">
-                Give review
-            </button>
-
-            <!-- Main modal -->
-            <div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 overflow-auto bg-gray-900 bg-opacity-50 flex justify-center items-center">
-                <div class="bg-[#242831] rounded-lg overflow-hidden shadow-xl max-w-lg w-full">
-                    <!-- Modal content -->
-                    <div class="flex items-center justify-between p-4 border-b">
-                        <h3 class="text-lg font-semibold text-white">Give your review</h3>
-                        <button type="button" class="text-gray-400 hover:text-gray-500 focus:outline-none" data-modal-hide="default-modal">
-                            <svg class="w-6 h-6" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M14.7 14.7c-.2.2-.5.2-.7 0L10 10.707 6.707 14c-.2.2-.5.2-.7 0-.2-.2-.2-.5 0-.7L9.293 10 6 6.707c-.2-.2-.2-.5 0-.7.2-.2.5-.2.7 0L10 9.293l3.293-3.293c.2-.2.5-.2.7 0 .2.2.2.5 0 .7L10.707 10l3.293 3.293c.2.2.2.5 0 .7z" fill="currentColor"/>
-                            </svg>
-                        </button>
-                    </div>
-                    <!-- Modal body -->
-                    <div class="p-4">
-                        <form method="post" id="post-form" action="{% url 'show:save_review' %}">
-                            {% csrf_token %}
-                            <div class="mb-4">
-                                <label for="deskripsi" class="block text-green-300 font-bold mb-2">Review description:</label>
-                                <textarea name="deskripsi" id="deskripsi" class="w-full px-3 py-2 border rounded-lg bg-gray-700 text-green-300"></textarea>
-                            </div>
-                            <div class="mb-4">
-                                <label for="rating" class="block text-green-300 font-bold mb-2">Rating:</label>
-                                <input type="number" name="rating" id="rating" class="w-full px-3 py-2 border rounded-lg bg-gray-700 text-green-300">
-                            </div>
-                            <div class="flex items-center justify-end p-4 border-t">
-                                <button type="submit" id="submit" class="mt-5 block rounded-md font-bold border border-gray-600 px-12 py-3 duration-200 text-green-300 border-green-300 hover:bg-green-300 hover:text-[#242831]">
-                                    Submit
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                    <!-- Modal footer -->
+        <div class="mb-4">
+            <div class="row">
+                <div class="col-12 mb-3">
+                    <h2 class="text-success">Title: {{ tayangan.0.1 }}</h2>
+                </div>
+                <div class="col-12">
+                    <h3 class="text-success">Episodes:</h3>
+                    <ul class="list-group">
+                        {% for eps in episode %}
+                        <li class="list-group-item bg-dark text-success border-secondary">
+                            <a href="{% url 'show:episode' judul=tayangan.0.1 sub_judul=eps.1 %}" class="text-success">{{ eps.1 }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
                 </div>
             </div>
         </div>
-
-        <!-- Daftar ulasan -->
-        <div class="container mx-auto px-4 py-4" id="review-container">
+        <div class="mb-4">
+            <div class="row">
+                <div class="col-12 mb-3">
+                    <a href="{% url 'show:add_to' %}?judul={{ tayangan.0.1 }}&id={{ tayangan.0.0 }}&addto=download" class="btn btn-warning btn-block">Download Show</a>
+                </div>
+                <div class="col-12">
+                    <a href="{% url 'show:add_to' %}?judul={{ tayangan.0.1 }}&id={{ tayangan.0.0 }}&addto=favorit" class="btn btn-warning btn-block">Save to Favourites</a>
+                </div>
+            </div>
+        </div>
+        <div class="mb-4">
+            <div class="row">
+                <div class="col-12 mb-3">
+                    <h3 class="text-info">Total View: {{ tayangan.0.4 }}</h3>
+                </div>
+                <div class="col-12 mb-3">
+                    <h3 class="text-info">Average Rating: {{ tayangan.0.6 }}</h3>
+                </div>
+                <div class="col-12 mb-3">
+                    <h3 class="text-info">Synopsis: {{ tayangan.0.2 }}</h3>
+                </div>
+                <div class="col-12 mb-3">
+                    <h3 class="text-info">Genre: {{ tayangan.0.5 }}</h3>
+                </div>
+                <div class="col-12 mb-3">
+                    <h3 class="text-info">Country of Origin: {{ tayangan.0.3 }}</h3>
+                </div>
+                <div class="col-12 mb-3">
+                    <h3 class="text-purple">Actors:</h3>
+                    <ul class="list-group">
+                        {% for actor in pemain %}
+                        <li class="list-group-item bg-dark text-white border-secondary">- {{ actor.0 }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="col-12 mb-3">
+                    <h3 class="text-purple">Screenwriters:</h3>
+                    <ul class="list-group">
+                        {% for writer in penulis %}
+                        <li class="list-group-item bg-dark text-white border-secondary">- {{ writer.0 }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="col-12 mb-3">
+                    <h3 class="text-purple">Director:</h3>
+                    <ul class="list-group">
+                        {% for director in sutradara %}
+                        <li class="list-group-item bg-dark text-white border-secondary">- {{ director.0 }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="mb-4">
+            <h2 class="text-warning">Leave a Review</h2>
+            <form action="{% url 'show:save_review' %}?id_tayangan={{ tayangan.0.0 }}" method="POST" class="bg-secondary p-4 rounded">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="review">Your Review:</label>
+                    <textarea id="review" name="review" rows="4" class="form-control" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="rating">Rating:</label>
+                    <select id="rating" name="rating" class="form-control" required>
+                        <option value="1">1 - Very Bad</option>
+                        <option value="2">2 - Bad</option>
+                        <option value="3">3 - Average</option>
+                        <option value="4">4 - Good</option>
+                        <option value="5">5 - Excellent</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Submit Review" class="btn btn-primary mt-3">
+                </div>
+            </form>
+            {% if ulasan %}
+            <div class="mt-5">
+                <h2 class="text-bold text-warning">Daftar Ulasan:</h2>
+                <ul class="list-group">
+                    {% for ulas in ulasan %}
+                    <li class="list-group-item bg-dark text-light border-secondary">{{ ulas.1 }} - {{ ulas.4 }} ({{ ulas.3 }}/5)</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>
 
-
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"/>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 {% endblock content %}
-
-<script>
-    const modalToggleButtons = document.querySelectorAll('[data-modal-toggle]');
-    const modalCloseButtons = document.querySelectorAll('[data-modal-hide]');
-    const modal = document.getElementById('default-modal');
-
-    // Function to toggle modal visibility
-    function toggleModal() {
-        modal.classList.toggle('hidden'); // Toggle visibility of the modal
-    }
-
-    // Add click event listener to each modal toggle button
-    modalToggleButtons.forEach(button => {
-        button.addEventListener('click', toggleModal);
-    });
-
-    // Add click event listener to each modal close button
-    modalCloseButtons.forEach(button => {
-        button.addEventListener('click', toggleModal);
-    });
-
-    function updateReview() {
-        fetch("{% url 'show:update_review' judul=tayangan.0.judul %}")
-        .then(response => response.json())
-        .then(data => {
-            const reviewContainer = document.getElementById('review-container');
-            reviewContainer.innerHTML = ''; // Clear previous content
-            
-            data.ulasan.forEach(review => {
-                const listItem = document.createElement('li');
-                listItem.classList.add('text-slate-100', 'mb-4');
-                listItem.innerHTML = `
-                    <span style="margin-left: 20px;" class="text-green-300">Username: ${review.username}</span><br>
-                    <span style="margin-left: 20px;" class="text-green-300">Deskripsi: ${review.deskripsi}</span><br>
-                    <span style="margin-left: 20px;" class="text-green-300">Rating: ${review.rating}</span><br>
-                `;
-                reviewContainer.appendChild(listItem);
-            });
-        })
-        .catch(error => console.error('Error:', error));
-    }
-
-    function addReview(event) {
-        event.preventDefault();
-        const deskripsi = document.getElementById('deskripsi').value;
-        const rating = document.getElementById('rating').value;
-        const idTayangan = "{{ tayangan.0.id }}";
-        
-        // Send a POST request to save the new review
-        fetch("{% url 'show:save_review' %}", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': "{{ csrf_token }}"
-            },
-            body: JSON.stringify({
-                id_tayangan: idTayangan,
-                deskripsi: deskripsi,
-                rating: rating
-            })
-        })
-        .then(response => {
-            if (response.ok) {
-                // Update the review container with the new data
-                updateReview();
-                // Reset form
-                document.getElementById("post-form").reset();
-                // Close modal
-                toggleModal();
-            } else {
-                throw new Error('Failed to add review');
-            }
-        })
-        .catch(error => console.error('Error:', error));
-    }
-    updateReview()
-    // Call the updateReview function when the page loads
-
-    const postForm = document.getElementById('post-form');
-    postForm.addEventListener('submit', addReview);
-    
-</script>

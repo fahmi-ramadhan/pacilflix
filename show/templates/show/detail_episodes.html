@@ -1,106 +1,130 @@
-{% extends 'base.html' %}
-
-{% block content %}
-<style>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Downloaded Song</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <style>
     @media screen and (-webkit-min-device-pixel-ratio: 0) {
-     
-        input[type="range"]::-webkit-slider-thumb {
-            width: 15px;
-            -webkit-appearance: none;
-  			appearance: none;
-            height: 15px;
-            cursor: ew-resize;
-            background: #FFF;
-            box-shadow: -405px 0 0 400px #605E5C;
-            border-radius: 50%;
-            
-        }
+      input[type="range"]::-webkit-slider-thumb {
+        width: 15px;
+        -webkit-appearance: none;
+        appearance: none;
+        height: 15px;
+        cursor: ew-resize;
+        background: #FFF;
+        box-shadow: -405px 0 0 400px #605E5C;
+        border-radius: 50%;
+      }
     }
-</style>
+  </style>
+</head>
+<body>
 <div class="mx-auto min-h-screen bg-[#242831] font-inter_tight pb-6">
-<div class="container mx-auto px-4 py-4" style="cursor: auto;">
+  <div class="container mx-auto px-4 py-4" style="cursor: auto;">
     <div class="mb-12 text-slate-100 text-center">
-        <h1 class="pt-16 pb-4 font-bold text-5xl drop-shadow-md"><span class="bg-gradient-to-r from-blue-500 to-red-500 text-transparent bg-clip-text">Episode</span> page</h1>
+      <h1 class="pt-16 pb-4 font-bold text-5xl drop-shadow-md">
+        <span class="bg-gradient-to-r from-blue-500 to-red-500 text-transparent bg-clip-text">Episode</span> page
+      </h1>
     </div>
     <div class="flex flex-col">
-        <div class="mb-4">
-                <div class="mt-10 mb-2 text-slate-100">
-                    <p class="text-xl">Title: {{ judul }}</p>
-                </div>
-                <div class="mt-3 mb-2 text-slate-100">
-                    <p class="text-xl">Episode title: {{ subjudul }}</p>
-                </div>
+      <div class="mb-4">
+        <div class="mt-10 mb-2 text-slate-100">
+          <p class="text-xl">Title: {{ judul }}</p>
         </div>
-    </div>
-    <div class="flex flex-col">
-        <div class="mb-4">
-            <div class="mt-5">
-                <input id="input-range" class="w-full rounded-lg overflow-hidden appearance-none bg-gray-400 h-4 w-128" type="range" min="1" max="100" step="1" value="0" />
-            </div>
-            <a href="#" class="w-full block rounded-md font-bold border border-gray-600 px-12 py-3 duration-200 text-white border-white hover:bg-white hover:text-[#242831]">
-                Tonton 
-            </a>
+        <div class="mt-3 mb-2 text-slate-100">
+          <p class="text-xl">Episode title: {{ subjudul }}</p>
         </div>
+      </div>
     </div>
     <div class="flex flex-col">
-        <div class="mb-4">
-            <table>
-                <tr class="text-left">
-                    <td class="text-left">
-                        <div class="mt-3 mb-2 text-slate-100">
-                            <p class="text-xl">Other episodes:</p>
-                        </div>
-                        <ul>
-                            {% for eps in episode %}
-                            <li class="mb-6 text-left">
-                                {% if eps.0 == subjudul %}
-                                <a class="max-w-48 block rounded-md font-bold border border-gray-600 px-12 py-3 duration-200 border-white hover:bg-white hover:text-[#242831]">
-                                    {{ eps.0 }}
-                                </a>
-                                {% else %}
-                                <a href="{% url 'show:episode' judul=eps.1 sub_judul=eps.0 %}" class="max-w-48 block rounded-md font-bold border border-gray-600 px-12 py-3 duration-200 border-white hover:bg-white hover:text-[#242831]">
-                                    {{ eps.0 }}
-                                </a>
-                                {% endif %}
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="text-left">
-                        <div class="mt-3 mb-2 text-slate-100">
-                            <p class="text-xl">Episode synopsis: {{ episode_khusus.0.2 }}</p>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="text-left">
-                        <div class="mt-1 mb-2 text-slate-100">
-                            <p class="text-xl">Episode duration: {{ episode_khusus.0.3 }} menit</p>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="text-left">
-                        <div class="mt-1 mb-2 text-slate-100">
-                            <p class="text-xl">Episode URL: <a href="{{episode_khusus.0.4}}">{{ episode_khusus.0.4 }}</a></p>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="text-left">
-                        {% for eps in episode_khusus %}
-                        <div class="mt-1 mb-2 text-slate-100">
-                            <p class="text-xl">Episode release date: {{ episode_khusus.0.5 }}</p>
-                        </div>
-                        {% endfor %}
-                    </td>
-                </tr>
+      <div class="mb-4">
+        <div class="mt-5">
+            <input id="input-range" class="w-full rounded-lg overflow-hidden appearance-none bg-gray-400 h-4" type="range" min="1" max="{{ episode_khusus.0.3 }}" step="1" value="50" />
+        <a href="#" class="w-full block rounded-md font-bold border border-gray-600 px-12 py-3 duration-200 text-white border-white hover:bg-white hover:text-[#242831]">
+          Tonton
+        </a>
+      </div>
+    </div>
+    <div class="flex flex-col">
+      <div class="mb-4">
+        <table>
+          <tr class="text-left">
+            <td class="text-left">
+              <div class="mt-3 mb-2 text-slate-100">
+                <p class="text-xl">Other episodes:</p>
+              </div>
+              <ul>
+                {% for eps in episode %}
+                <li class="mb-6 text-left">
+                  {% if eps.0 == subjudul %}
+                  <a class="max-w-48 block rounded-md font-bold border border-gray-600 px-12 py-3 duration-200 border-white hover:bg-white hover:text-[#242831]">
+                    {{ eps.0 }}
+                  </a>
+                  {% else %}
+                  <a href="{% url 'show:episode' judul=eps.1 sub_judul=eps.0 %}"
+                     class="max-w-48 block rounded-md font-bold border border-gray-600 px-12 py-3 duration-200 border-white hover:bg-white hover:text-[#242831]">
+                    {{ eps.0 }}
+                  </a>
+                  {% endif %}
+                </li>
+                {% endfor %}
+              </ul>
+            </td>
+          </tr>
+          <tr>
+            <td class="text-left">
+              <div class="mt-3 mb-2 text-slate-100">
+                <p class="text-xl">Episode synopsis: {{ episode_khusus.0.2 }}</p>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="text-left">
+              <div class="mt-1 mb-2 text-slate-100">
+                <p class="text-xl">Episode duration: {{ episode_khusus.0.3 }} menit</p>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="text-left">
+              <div class="mt-1 mb-2 text-slate-100">
+                <p class="text-xl">Episode URL: <a href="{{ episode_khusus.0.4 }}">{{ episode_khusus.0.4 }}</a></p>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="text-left">
+              <div class="mt-1 mb-2 text-slate-100">
+                <p class="text-xl">Episode release date: {{ episode_khusus.0.5 }}</p>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
 
-            </table>
-        </div>
-    </div>
-</div>
-</div>
-{% endblock content %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const rangeInput = document.getElementById("input-range");
+    const totalDuration = parseInt(rangeInput.max, 10);
+    const threshold = totalDuration * 0.7;
+
+    rangeInput.addEventListener("input", function () {
+      const currentValue = parseInt(rangeInput.value, 10);
+
+      if (currentValue >= threshold) {
+        window.location.href = '/show/add-tontonan/' + subjudul + '/';
+      }
+    });
+  });
+
+</script>
+</body>
+</html>

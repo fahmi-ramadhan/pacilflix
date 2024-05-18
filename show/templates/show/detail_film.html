@@ -33,6 +33,32 @@
         background-color: #ffffff; /* White background on hover */
         border-color: #2b6cb0; /* Dark blue border on hover */
     }
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 0.5rem;
+        border-radius: 5px;
+        border: 1px solid #718096;
+        background-color: #242831;
+        color: #f9f9f9;
+    }
+    .form-group input[type="submit"] {
+        background-color: #4A5568;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .form-group input[type="submit"]:hover {
+        background-color: #2b6cb0;
+    }
 </style>
 <div class="mx-auto min-h-screen bg-[#242831] font-inter_tight pb-6">
     <div class="container mx-auto px-4 py-4" style="cursor: auto;">
@@ -165,6 +191,39 @@
                         </td>
                     </tr>
                 </table>
+            </div>
+        </div>
+        
+        <div class="flex flex-col">
+            <div class="mb-4">
+                <h2 class="text-3xl font-bold mb-4">Leave a Review</h2>
+                <form action="{% url 'show:save_review' %}?id_tayangan={{ tayangan.0.0 }}" method="POST" class="w-full max-w-lg">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="review">Your Review:</label>
+                        <textarea id="review" name="review" rows="4" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="rating">Rating:</label>
+                        <select id="rating" name="rating" required>
+                            <option value="1">1 - Very Bad</option>
+                            <option value="2">2 - Bad</option>
+                            <option value="3">3 - Average</option>
+                            <option value="4">4 - Good</option>
+                            <option value="5">5 - Excellent</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Submit Review">
+                    </div>
+                </form>
+                {% if ulasan %}
+                <ul>
+                {% for ulas in ulasan %}
+                <li>{{ulas.1}} - {{ulas.4}} ({{ulas.3}}/5)</li>
+                {% endfor %}
+                </ul>
+                {% endif %}
             </div>
         </div>
     </div>

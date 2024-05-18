@@ -349,18 +349,26 @@ def detil_tayangan(request, id_tayangan):
         nama;
     """, [id_tayangan])
     
+    ulasan = execute_sql_query(f"SELECT * FROM ULASAN WHERE id_tayangan = '{id_tayangan}'")
+    
+    episode = None
+    
     if request.GET.get('type') == "series":
         episode = execute_sql_query(f"SELECT * FROM EPISODE WHERE id_series = '{id_tayangan}';")
     else:
         episode: None
+
+    print(ulasan)
 
     context.update({
         'tayangan': tayangan,
         'pemain': pemain,
         'penulis': penulis,
         'sutradara': sutradara,
+        'ulasan': ulasan,
         'episode': episode
     })
+    
 
     # Check if the tayangan is a film or a series and choose the appropriate template
     template_name = 'show/detail_film.html' if film_data else 'show/series.html'
@@ -420,35 +428,21 @@ def episode_detail(request, judul, sub_judul):
 
 def save_review(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
-        deskripsi = data['deskripsi']
-        rating = data['rating']
-        id_tayangan = data['id_tayangan']
-        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        username = request.session['username']
+        review = request.POST['review']
+        rating = request.POST['rating']
+        print(rating)
+        id_tayangan = request.GET.get('id_tayangan')
         
         # Lakukan penyisipan data ke dalam basis data
-        try:
-            execute_sql_query("""
-                INSERT INTO ulasan (
-                    id_tayangan,
-                    username, 
-                    timestamp, 
-                    rating,
-                    deskripsi
-                )
-                VALUES (%s, %s, %s, %s, %s);
-                """,
-                (
-                    id_tayangan,
-                    request.session.get("username", ""), 
-                    timestamp,
-                    rating,
-                    deskripsi
-                )
-            )
-            return JsonResponse({"status": "success", "message": "Review added successfully."}, status=201)
-        except Exception as e:
-            return JsonResponse({"status": "error", "message": str(e)}, status=500)
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        cursor.execute(f"INSERT INTO ULASAN VALUES ('{id_tayangan}', '{username}', CURRENT_TIMESTAMP, {rating}, '{review}');")
+        connection.commit()
+        print("berhasil")
+        cursor.close()
+        connection.close()
+        return redirect('show:tayangan')
     else:
         return JsonResponse({"status": "error", "message": "Method not allowed."}, status=405)
 
@@ -464,6 +458,23 @@ def update_review(request, judul):
     return JsonResponse({'ulasan': ulasan}, content_type='application/json')
 
 def add_to(request):
+    username = request.session['username']
+    judul = request.GET.get('judul')
+    id_tayangan = request.GET.get('id')
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    if request.GET.get('addto') == "favorit":
+        cursor.execute(f"INSERT INTO DAFTAR_FAVORIT VALUES (CURRENT_TIMESTAMP, '{username}', '{judul}')")
+        connection.commit()
+    elif request.GET.get('addto') == "download":
+        cursor.execute(f"INSERT INTO TAYANGAN_TERUNDUH VALUES ('{id_tayangan}', '{username}', CURRENT_TIMESTAMP)")
+        connection.commit()
+    cursor.close()
+    connection.close()
+
+    return redirect('show:tayangan')
+
+def add_tontonan(request):
     username = request.session['username']
     judul = request.GET.get('judul')
     id_tayangan = request.GET.get('id')

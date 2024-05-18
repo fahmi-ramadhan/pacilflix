@@ -71,7 +71,7 @@
     <td>{{ film.2 }}</td>
     <td><a href="{{ film.3 }}" target="_blank">Watch Trailer</a></td>
     <td>{{ film.4 }}</td>
-    <td><a href="{% url 'show:detail' id_tayangan=film.0 %}">Click here!</a></td>
+    <td><a href="{% url 'show:detail' id_tayangan=film.0 %}?type=film">Click here!</a></td>
 </tr>
 {% endfor %}
 
@@ -97,7 +97,7 @@
     <td>{{ series.2 }}</td>
     <td><a href="{{ series.3 }}" target="_blank">Watch Trailer</a></td>
     <td>{{ series.4 }}</td>
-    <td><a href="{% url 'show:detail' id_tayangan=series.0 %}">Click here!</a></td>
+    <td><a href="{% url 'show:detail' id_tayangan=series.0 %}?type=series">Click here!</a></td>
 </tr>
 {% endfor %}
 

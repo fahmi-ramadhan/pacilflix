@@ -59,13 +59,13 @@
                     <tr>
                         <td>
                             <div class="button-group">
-                                <a href="#" class="block rounded-md font-bold duration-200 hover:bg-blue-500 hover:text-white">
+                                <a href="" class="block rounded-md font-bold duration-200 hover:bg-blue-500 hover:text-white">
                                     Watch Now
                                 </a>
-                                <a href="#" class="block rounded-md font-bold duration-200 hover:bg-green-500 hover:text-white">
+                                <a href="{% url 'show:add_to' %}?judul={{ tayangan.0.1 }}&id={{ tayangan.0.0 }}&addto=download" class="block rounded-md font-bold duration-200 hover:bg-green-500 hover:text-white">
                                     Download Show
                                 </a>
-                                <a href="#" class="block rounded-md font-bold duration-200 hover:bg-red-500 hover:text-white">
+                                <a href="{% url 'show:add_to' %}?judul={{ tayangan.0.1 }}&id={{ tayangan.0.0 }}&addto=favorit" class="block rounded-md font-bold duration-200 hover:bg-red-500 hover:text-white">
                                     Save to Favourites
                                 </a>
                             </div>

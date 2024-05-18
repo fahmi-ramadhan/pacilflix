@@ -25,19 +25,11 @@
                             </div>
                             <ul>
                                 {% for eps in episode %}
-                                    {% if eps.judul and eps.sub_judul %}
-                                        <li class="mb-6">
-                                            <a href="{% url 'show:episode' judul=eps.judul sub_judul=eps.sub_judul %}" class="mt-5 w-full block rounded-md font-bold border border-gray-600 px-12 py-3 duration-200 text-green-300 border-green-300 hover:bg-green-300 hover:text-[#242831]">
-                                                Episode {{ eps.sub_judul }}
-                                            </a>
-                                        </li>
-                                    {% else %}
-                                        <li class="mb-6">
-                                            <p class="mt-5 w-full block rounded-md font-bold border border-gray-600 px-12 py-3 duration-200 text-green-300 border-green-300 hover:bg-green-300 hover:text-[#242831]">
-                                                Episode {{ forloop.counter }}
-                                            </p>
-                                        </li>
-                                    {% endif %}
+                                <li class="mb-6">
+                                    <p class="mt-5 w-full block rounded-md font-bold border border-gray-600 px-12 py-3 duration-200 text-green-300 border-green-300 hover:bg-green-300 hover:text-[#242831]">
+                                        <a href={% url 'show:episode' judul=tayangan.0.1 sub_judul=eps.1 %}>{{ eps.1 }}</a>
+                                    </p>
+                                </li>
                                 {% endfor %}
                             </ul>
                         </td>

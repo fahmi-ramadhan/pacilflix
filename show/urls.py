@@ -10,4 +10,5 @@ urlpatterns = [
     path('<str:judul>/episode/<str:sub_judul>/', views.episode_detail, name='episode'),
     path('save_review', views.save_review, name='save_review'),
     path('<str:judul>/update_review/', views.update_review, name='update_update'),
+    path('add-to', views.add_to, name='add_to'),
 ]

@@ -26,7 +26,7 @@ def login(request):
 
             if user is not None:
                 request.session['username'] = user[0]
-                return redirect('show')
+                return redirect('show:tayangan')
             else:
                 messages.error(request, 'Username or password is incorrect')
                 return redirect('authentication:login')

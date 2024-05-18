@@ -1,5 +1,5 @@
 import datetime
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.http import JsonResponse
 import json
 from utils.db_utils import get_db_connection
@@ -7,8 +7,6 @@ from django.views.decorators.http import require_http_methods
 from django.core.serializers.json import DjangoJSONEncoder
 
 def execute_sql_query(sql_query, params=None):
-    print("Executing SQL Query:", sql_query)
-    print("With Parameters:", params)
     with get_db_connection() as conn:
         with conn.cursor() as cursor:
             cursor.execute(sql_query, params or [])
@@ -350,12 +348,18 @@ def detil_tayangan(request, id_tayangan):
     GROUP BY
         nama;
     """, [id_tayangan])
+    
+    if request.GET.get('type') == "series":
+        episode = execute_sql_query(f"SELECT * FROM EPISODE WHERE id_series = '{id_tayangan}';")
+    else:
+        episode: None
 
     context.update({
         'tayangan': tayangan,
         'pemain': pemain,
         'penulis': penulis,
         'sutradara': sutradara,
+        'episode': episode
     })
 
     # Check if the tayangan is a film or a series and choose the appropriate template
@@ -409,8 +413,9 @@ def episode_detail(request, judul, sub_judul):
         WHERE 
             e.release_date <= CURRENT_DATE;
         """)
-    context.update({'episode':episode,'episode_khusus':episode_khusus,'release_episode': release_episode})
-    return render(request, "episodes.html", context)
+    print(episode_khusus)
+    context.update({'episode':episode,'episode_khusus':episode_khusus,'release_episode': release_episode, 'judul': judul, 'subjudul': sub_judul})
+    return render(request, 'show/detail_episodes.html', context)
 
 
 def save_review(request):
@@ -458,3 +463,19 @@ def update_review(request, judul):
     
     return JsonResponse({'ulasan': ulasan}, content_type='application/json')
 
+def add_to(request):
+    username = request.session['username']
+    judul = request.GET.get('judul')
+    id_tayangan = request.GET.get('id')
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    if request.GET.get('addto') == "favorit":
+        cursor.execute(f"INSERT INTO DAFTAR_FAVORIT VALUES (CURRENT_TIMESTAMP, '{username}', '{judul}')")
+        connection.commit()
+    elif request.GET.get('addto') == "download":
+        cursor.execute(f"INSERT INTO TAYANGAN_TERUNDUH VALUES ('{id_tayangan}', '{username}', CURRENT_TIMESTAMP)")
+        connection.commit()
+    cursor.close()
+    connection.close()
+
+    return redirect('show:tayangan')

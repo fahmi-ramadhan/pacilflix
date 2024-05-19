@@ -30,6 +30,7 @@ SECRET_KEY = 'django-insecure-oigg&^%3%-e4!dv#g-r!bl4@a9#13kiiosw4l__g-fs6r_-pt&
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
+CSRF_TRUSTED_ORIGINS = ['https://pacilflix-c6.up.railway.app']
 
 
 # Application definition

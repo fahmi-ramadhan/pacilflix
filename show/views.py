@@ -508,4 +508,6 @@ def search(request):
     context.update({'tayangan': tayangan})
     
     return render(request, 'show/hasil_pencarian.html', context=context)
+
+
     

@@ -13,5 +13,5 @@ urlpatterns = [
     path('add-to', views.add_to, name='add_to'),
     path('add-tontonan/<str:id>', views.add_tontonan, name='add_tontonan'),
     path('search', views.search, name='search'),
-    
+
 ]

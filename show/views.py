@@ -356,6 +356,8 @@ def detil_tayangan(request, id_tayangan):
     
     cek_tipe = execute_sql_query(f"SELECT * FROM SERIES WHERE id_tayangan = '{id_tayangan}';")
     
+    daftar_favorit = execute_sql_query(f"SELECT * FROM DAFTAR_FAVORIT WHERE username = '{context['username']}'")
+    
     episode = None
     
     if request.GET.get('type') == "series" or cek_tipe:
@@ -369,7 +371,8 @@ def detil_tayangan(request, id_tayangan):
         'penulis': penulis,
         'sutradara': sutradara,
         'ulasan': ulasan,
-        'episode': episode
+        'episode': episode,
+        'daftar_favorit': daftar_favorit,
     })
     
 
@@ -472,12 +475,14 @@ def update_review(request, judul):
 
 def add_to(request):
     username = request.session['username']
-    judul = request.GET.get('judul')
     id_tayangan = request.GET.get('id')
+    favorite = request.POST['favorite_list']
     connection = get_db_connection()
     cursor = connection.cursor()
     if request.GET.get('addto') == "favorit":
-        cursor.execute(f"INSERT INTO DAFTAR_FAVORIT VALUES (CURRENT_TIMESTAMP, '{username}', '{judul}');")
+        cursor.execute(f"INSERT INTO DAFTAR_FAVORIT VALUES (CURRENT_TIMESTAMP, '{username}', '{favorite}');")
+        cursor.execute(f"INSERT INTO TAYANGAN_MEMILIKI_DAFTAR_FAVORIT VALUES ('{id_tayangan}', CURRENT_TIMESTAMP, '{username}');")
+        print("berhasil")
         connection.commit()
     elif request.GET.get('addto') == "download":
         cursor.execute(f"INSERT INTO TAYANGAN_TERUNDUH VALUES ('{id_tayangan}', '{username}', CURRENT_TIMESTAMP);")

@@ -16,7 +16,6 @@
                 <th>Sinopsis</th>
                 <th>Trailer</th>
                 <th>Tanggal Rilis</th>
-                <th>Total View 7 Hari Terakhir</th>
                 <th>Detail Tayangan</th>
             </tr>
         </thead>
@@ -26,8 +25,7 @@
                 <td>{{ tayang.1 }}</td>
                 <td>{{ tayang.2 }}</td>
                 <td><a href="{{ tayang.3 }}" target="_blank">Watch Trailer</a></td>
-                <td>{{ tayang.4 }}</td>
-                <td>{{ tayang.5 }}</td>
+                <td>{{ tayang.6 }}</td>
                 <td><a href={% url 'show:detail' id_tayangan=tayang.0 %}> Click here!</a></td>
             </tr>
             {% endfor %}

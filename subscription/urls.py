@@ -1,6 +1,9 @@
 from django.urls import path
-from subscription.views import index
+from subscription.views import subscriptions, subscribe
+
+app_name = 'subscription'
 
 urlpatterns = [
-    path('', index, name='subscription'),
+    path('', subscriptions, name='subscription'),
+    path('subscribe/<str:paket>', subscribe, name='subscribe')
 ]

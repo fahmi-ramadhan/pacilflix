@@ -1,6 +1,8 @@
 from django.urls import path
-from contributor.views import index
+from contributor.views import contributors
+
+app_name = 'contributor'
 
 urlpatterns = [
-    path('', index, name='contributor'),
+    path('', contributors, name='contributor'),
 ]

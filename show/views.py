@@ -351,14 +351,14 @@ def detil_tayangan(request, id_tayangan):
     
     ulasan = execute_sql_query(f"SELECT * FROM ULASAN WHERE id_tayangan = '{id_tayangan}'")
     
+    cek_tipe = execute_sql_query(f"SELECT * FROM SERIES WHERE id_tayangan = '{id_tayangan}';")
+    
     episode = None
     
-    if request.GET.get('type') == "series":
+    if request.GET.get('type') == "series" or cek_tipe:
         episode = execute_sql_query(f"SELECT * FROM EPISODE WHERE id_series = '{id_tayangan}';")
     else:
         episode: None
-
-    print(ulasan)
 
     context.update({
         'tayangan': tayangan,
@@ -473,7 +473,6 @@ def add_to(request):
     cursor.close()
     connection.close()
 
-    print("berhasil")
     return redirect('show:tayangan')
 
 def add_tontonan(request, id):
@@ -487,3 +486,19 @@ def add_tontonan(request, id):
     connection.close()
 
     return redirect('show:tayangan')
+
+def search(request):
+    context = {
+        "is_logged_in": False
+    }
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    query = request.GET.get('query')
+    cursor.execute(f"SELECT * FROM TAYANGAN WHERE judul ILIKE '%{query}%';")
+    tayangan = cursor.fetchall()
+    cursor.close()
+    connection.close()
+    context.update({'tayangan': tayangan})
+    
+    return render(request, 'show/hasil_pencarian.html', context=context)
+    

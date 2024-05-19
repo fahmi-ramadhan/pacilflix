@@ -2,19 +2,14 @@
 
 {% block content %}
 <div class="container">
+    <h1>Daftar Tayangan PacilFlix</h1>
     <div class="row">
         <div class="col-md-12 text-center">
-            <h1>Daftar Tayangan PacilFlix</h1>
-            <input type="text" id="searchInput" class="form-control my-3" placeholder="Cari Film, Series..." oninput="searchShows()">
+                <form method='GET' action="{% url 'show:search' %}" class="d-flex flex-row">
+                <input type="text" name="query" id="searchInput" class="form-control my-3" placeholder="Cari Film, Series..." oninput="searchShows()">
+                <button type="submit" class="px-4 py-2 border border-gray-300 bg-gray-200 text-gray-700 rounded-r-md hover:bg-gray-300 focus:outline-none">Search</button>
+            </form>
         </div>
-    </div>
-    <div class="max-w-screen-xl mx-auto p-3">
-        <form method="GET" action="" class="flex items-center">
-            <div class="w-full">
-                <input type="text" name="query" placeholder="Search for film or series..." class="w-full rounded-l-md px-4 py-2 border-t border-b border-l text-gray-800 border-gray-200 bg-white focus:outline-none">
-            </div>
-            <button type="submit" class="px-4 py-2 border border-gray-300 bg-gray-200 text-gray-700 rounded-r-md hover:bg-gray-300 focus:outline-none">Search</button>
-        </form>
     </div>
     <div class="row mt-3">
         <div class="col-md-12">
@@ -45,7 +40,7 @@
                         <td><a href="{{ tayangan.3 }}" target="_blank">Watch Trailer</a></td>
                         <td>{{ tayangan.4 }}</td>
                         <td>{{ tayangan.5 }}</td>
-                        <td><a> Click here!</a></td>
+                        <td><a href={% url 'show:detail' id_tayangan=tayangan.0 %}> Click here!</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>

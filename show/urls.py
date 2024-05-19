@@ -12,4 +12,6 @@ urlpatterns = [
     path('<str:judul>/update_review/', views.update_review, name='update_update'),
     path('add-to', views.add_to, name='add_to'),
     path('add-tontonan/<str:id>', views.add_tontonan, name='add_tontonan'),
+    path('search', views.search, name='search'),
+    
 ]

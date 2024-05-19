@@ -171,8 +171,6 @@ ORDER BY
 LIMIT 10;
 
     """)
-    
-    print(top_ten)
 
     film = execute_sql_query("""
         SELECT 

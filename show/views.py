@@ -137,7 +137,7 @@ def show_tayangan(request):
     t.judul,
     t.sinopsis_trailer,
     t.url_video_trailer,
-    to_char(t.release_date_trailer, 'DD-MM-YYYY') as release_date_trailer,
+    TO_CHAR(t.release_date_trailer, 'DD-MM-YYYY') AS release_date_trailer,
     COALESCE(tv_all_time.total_view_all_time, 0) AS total_view_all_time,
     COALESCE(tv_7_days.total_view_7_days, 0) AS total_view_7_days
 FROM 
@@ -149,15 +149,20 @@ LEFT JOIN
             COUNT(*) AS total_view_7_days
         FROM 
             riwayat_nonton rn
-        INNER JOIN 
-            TAYANGAN t ON rn.id_tayangan = t.id
-        INNER JOIN
-            FILM f ON f.id_tayangan = t.id
+        LEFT JOIN 
+            FILM f ON f.id_tayangan = rn.id_tayangan
+        LEFT JOIN
+            EPISODE e ON e.id_series = rn.id_tayangan
         WHERE 
             rn.end_date_time >= NOW() - INTERVAL '7 days'
-            AND EXTRACT(EPOCH FROM (rn.end_date_time - rn.start_date_time)) >= 0.7 * f.durasi_film
-        GROUP BY rn.id_tayangan
-    ) as tv_7_days ON t.id = tv_7_days.id_tayangan
+            AND (
+                (f.id_tayangan IS NOT NULL AND EXTRACT(EPOCH FROM (rn.end_date_time - rn.start_date_time)) >= 0.7 * f.durasi_film)
+                OR 
+                (e.id_series IS NOT NULL AND EXTRACT(EPOCH FROM (rn.end_date_time - rn.start_date_time)) >= 0.7 * e.durasi)
+            )
+        GROUP BY 
+            rn.id_tayangan
+    ) AS tv_7_days ON t.id = tv_7_days.id_tayangan
 LEFT JOIN 
     (
         SELECT 
@@ -165,14 +170,17 @@ LEFT JOIN
             COUNT(*) AS total_view_all_time
         FROM 
             riwayat_nonton rn
-        INNER JOIN 
-            TAYANGAN t ON rn.id_tayangan = t.id
-        INNER JOIN
-            FILM f ON f.id_tayangan = t.id
+        LEFT JOIN 
+            FILM f ON f.id_tayangan = rn.id_tayangan
+        LEFT JOIN
+            EPISODE e ON e.id_series = rn.id_tayangan
         WHERE 
-            EXTRACT(EPOCH FROM (rn.end_date_time - rn.start_date_time)) >= 0.7 * f.durasi_film
-        GROUP BY rn.id_tayangan
-    ) as tv_all_time ON t.id = tv_all_time.id_tayangan
+            (f.id_tayangan IS NOT NULL AND EXTRACT(EPOCH FROM (rn.end_date_time - rn.start_date_time)) >= 0.7 * f.durasi_film)
+            OR 
+            (e.id_series IS NOT NULL AND EXTRACT(EPOCH FROM (rn.end_date_time - rn.start_date_time)) >= 0.7 * e.durasi)
+        GROUP BY 
+            rn.id_tayangan
+    ) AS tv_all_time ON t.id = tv_all_time.id_tayangan
 ORDER BY 
     tv_7_days.total_view_7_days DESC,
     tv_all_time.total_view_all_time DESC,
@@ -181,6 +189,8 @@ LIMIT 10;
 
 
     """)
+    
+    print(top_ten)
 
     film = execute_sql_query("""
         SELECT 

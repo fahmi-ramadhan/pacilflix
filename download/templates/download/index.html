@@ -38,29 +38,25 @@
     </div>
 </div>
 
-<!-- Main -->
-<!-- <div class="container my-5">
-    <h1 class="text-center mb-4">Daftar Unduhan</h1>
+<!-- Main content -->
+<div class="container my-5">
+    <h1 class="text-center mb-5">Daftar Unduhan</h1>
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-body">
-                    <form id="download-form" action="{% url 'download:add_download' %}" method="POST" class="d-flex flex-column align-items-center">
-                        {% csrf_token %}
-                        <label for="show-selection" class="form-label">Pilih Tayangan:</label>
-                        <div class="d-flex w-100 mb-3">
-                            <select id="show-selection" name="show_id" class="form-select">
-                                {% for show in available_shows %}
-                                    <option value="{{ show.id }}">{{ show.judul }}</option>
-                                {% endfor %}
-                            </select>
-                            <button type="button" class="btn btn-success ms-3">Unduh Tayangan</button>
-                        </div>
-                    </form>
-                </div>
+        <div class="col-md-12">
+            <div class="mb-3 text-center">
+                <form id="download-form" action="{% url 'download:add_download' %}" method="POST" class="d-flex justify-content-center align-items-center">
+                    {% csrf_token %}
+                    <label for="show-selection" class="form-label me-2">Pilih Tayangan:</label>
+                    <select id="show-selection" name="show_id" class="form-select me-2">
+                        {% for show in available_shows %}
+                            <option value="{{ show.id }}">{{ show.judul }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="button" class="btn btn-success" id="download-button">Unduh</button>
+                </form>
             </div>
-            <div class="table-responsive mt-4">
-                <table class="table align-middle text-center">
+            <div class="table-responsive">
+                <table class="table text-center align-middle">
                     <thead class="table-light">
                         <tr>
                             <th scope="col">Judul</th>
@@ -74,52 +70,6 @@
                             <td>{{ show.judul }}</td>
                             <td>{{ show.timestamp|date:"F j, Y, g:i a" }}</td>
                             <td>
-                                <form method="POST" action="{% url 'download:delete_show' %}">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="show_id" value="{{ show.id_tayangan }}">
-                                    <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                                </form>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>                    
-                </table>
-            </div>
-        </div>
-    </div>
-</div> -->
-<!-- Main -->
-<div class="container my-5">
-    <h1 class="text-center mb-5">Daftar Unduhan</h1>
-    <div class="row justify-content-center">
-        <div class="col-md-12">
-            <div class="mb-3 text-end">
-                <form id="download-form" action="{% url 'download:add_download' %}" method="POST">
-                    {% csrf_token %}
-                    <label for="show-selection">Pilih Tayangan:</label>
-                    <select id="show-selection" name="show_id" class="form-select">
-                        {% for show in available_shows %}
-                            <option value="{{ show.id }}">{{ show.judul }}</option>
-                        {% endfor %}
-                    </select>
-                    <button type="button" class="btn btn-success mt-2" id="download-button">Unduh Tayangan</button>
-                </form>
-            </div>
-            <div class="table-responsive">
-                <table class="table align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th scope="col" style="text-align: center;">Judul</th>
-                            <th scope="col" style="text-align: center;">Waktu Diunduh</th>
-                            <th scope="col" style="text-align: center;">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="downloads-list">
-                        {% for show in shows %}
-                        <tr id="row-{{ show.id_tayangan }}">
-                            <td style="text-align: center;">{{ show.judul }}</td>
-                            <td style="text-align: center;">{{ show.timestamp|date:"F j, Y, g:i a" }}</td>
-                            <td style="text-align: center;">
                                 <form method="POST" action="{% url 'download:delete_show' %}">
                                     {% csrf_token %}
                                     <input type="hidden" name="show_id" value="{{ show.id_tayangan }}">

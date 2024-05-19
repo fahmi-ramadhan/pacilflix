@@ -1,7 +1,10 @@
 import datetime
 from django.shortcuts import redirect, render
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 import json
+from django.contrib import messages
+
+import psycopg2
 from utils.db_utils import get_db_connection
 from django.views.decorators.http import require_http_methods
 from django.core.serializers.json import DjangoJSONEncoder
@@ -435,12 +438,21 @@ def save_review(request):
         print(rating)
         id_tayangan = request.GET.get('id_tayangan')
         
-        # Lakukan penyisipan data ke dalam basis data
-        connection = get_db_connection()
-        cursor = connection.cursor()
-        cursor.execute(f"INSERT INTO ULASAN VALUES ('{id_tayangan}', '{username}', CURRENT_TIMESTAMP, {rating}, '{review}');")
-        connection.commit()
-        print("berhasil")
+        try:
+            # Lakukan penyisipan data ke dalam basis data
+            connection = get_db_connection()
+            cursor = connection.cursor()
+            cursor.execute(f"INSERT INTO ULASAN VALUES ('{id_tayangan}', '{username}', CURRENT_TIMESTAMP, {rating}, '{review}');")
+            connection.commit()
+            
+        except psycopg2.Error as e:
+            if e.pgcode == 'P0001':  # Exception code for our custom exception
+                messages.error(request, "Anda sudah pernah memberikan ulasan")
+                return redirect('show:tayangan')
+            else:
+                print(e)
+                return HttpResponse("Error occurred while connecting to the database")
+        
         cursor.close()
         connection.close()
         return redirect('show:tayangan')

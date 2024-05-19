@@ -209,6 +209,7 @@ LIMIT 10;
     if username:
         top_lokal = execute_sql_query("""
             SELECT 
+                TAYANGAN.id,                      
                 TAYANGAN.judul,
                 TAYANGAN.sinopsis_trailer,
                 TAYANGAN.url_video_trailer,

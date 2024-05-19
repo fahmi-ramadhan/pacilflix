@@ -343,7 +343,7 @@ def detil_tayangan(request, id_tayangan):
         nama;
     """, [id_tayangan])
     
-    ulasan = execute_sql_query(f"SELECT * FROM ULASAN WHERE id_tayangan = '{id_tayangan}'")
+    ulasan = execute_sql_query(f"SELECT * FROM ULASAN WHERE id_tayangan = '{id_tayangan}' ORDER BY timestamp DESC")
     
     cek_tipe = execute_sql_query(f"SELECT * FROM SERIES WHERE id_tayangan = '{id_tayangan}';")
     

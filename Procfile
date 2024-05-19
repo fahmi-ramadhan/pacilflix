@@ -1,1 +1,1 @@
-web: python manage.py migrate && gunicorn pacilflix.wsg
+web: python manage.py migrate && gunicorn pacilflix.wsgi

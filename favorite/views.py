@@ -166,11 +166,13 @@ def favorite_details(request, show_id):
             JOIN TAYANGAN t ON tmf.id_tayangan = t.id
             WHERE tmf.username = %s AND tmf.id_tayangan = %s
         """, (username, str(show_id)))
-        shows = [{'judul': row[0], 'timestamp': row[1]} for row in cursor.fetchall()]
+        rows = cursor.fetchall()
+        shows = [{'judul': row[0], 'timestamp': row[1]} for row in rows]
+        show_title = shows[0]['judul'] if shows else 'Detail Daftar Favorit'
     except Exception as e:
         return HttpResponseBadRequest(f"Error processing request: {str(e)}")
     finally:
         cursor.close()
         connection.close()
 
-    return render(request, 'favorite/detail.html', {'shows': shows, 'show_id': show_id})
+    return render(request, 'favorite/detail.html', {'shows': shows, 'show_id': show_id, 'show_title': show_title})

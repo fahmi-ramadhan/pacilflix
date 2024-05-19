@@ -99,7 +99,6 @@ def subscribe(request, paket):
                 start_date = datetime.now()
                 end_date = start_date + timedelta(days=30)
                 payment_method = request.POST['payment_method']
-                connection = get_db_connection()
 
                 cursor.execute(f"""
                     INSERT INTO TRANSACTION (username, nama_paket, start_date_time, end_date_time, metode_pembayaran, timestamp_pembayaran)

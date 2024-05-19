@@ -138,7 +138,6 @@ def show_tayangan(request):
     t.sinopsis_trailer,
     t.url_video_trailer,
     TO_CHAR(t.release_date_trailer, 'DD-MM-YYYY') AS release_date_trailer,
-    COALESCE(tv_all_time.total_view_all_time, 0) AS total_view_all_time,
     COALESCE(tv_7_days.total_view_7_days, 0) AS total_view_7_days
 FROM 
     TAYANGAN t
@@ -162,31 +161,14 @@ LEFT JOIN
             )
         GROUP BY 
             rn.id_tayangan
+        ORDER BY 
+            total_view_7_days DESC
+        LIMIT 10
     ) AS tv_7_days ON t.id = tv_7_days.id_tayangan
-LEFT JOIN 
-    (
-        SELECT 
-            rn.id_tayangan, 
-            COUNT(*) AS total_view_all_time
-        FROM 
-            riwayat_nonton rn
-        LEFT JOIN 
-            FILM f ON f.id_tayangan = rn.id_tayangan
-        LEFT JOIN
-            EPISODE e ON e.id_series = rn.id_tayangan
-        WHERE 
-            (f.id_tayangan IS NOT NULL AND EXTRACT(EPOCH FROM (rn.end_date_time - rn.start_date_time)) >= 0.7 * f.durasi_film)
-            OR 
-            (e.id_series IS NOT NULL AND EXTRACT(EPOCH FROM (rn.end_date_time - rn.start_date_time)) >= 0.7 * e.durasi)
-        GROUP BY 
-            rn.id_tayangan
-    ) AS tv_all_time ON t.id = tv_all_time.id_tayangan
 ORDER BY 
-    tv_7_days.total_view_7_days DESC,
-    tv_all_time.total_view_all_time DESC,
+    total_view_7_days DESC,
     t.release_date_trailer DESC
 LIMIT 10;
-
 
     """)
     
